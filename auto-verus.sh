@@ -228,12 +228,12 @@ fi
 
 ## in case of a new install, download zcashparams
 if [[ "${NEW_INSTALL}" == "true" ]]; then
-		source verus-cli/fetch-params
+		verus-cli/fetch-params
 fi
 
 ## in case of a new install or a forked chain, bootstrap the wallet.
 if [[ ("${NEW_INSTALL}" == "true") || ("${CHECK_FORK}" == "CRIT") ]]; then
-		source verus-cli/fetch-bootstrap
+		verus-cli/fetch-bootstrap
 fi
 
 ## start daemon normally, except for forked chain.
