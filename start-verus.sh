@@ -42,7 +42,7 @@ else
 fi
 
 ## Start VRCS Daemon as verus user
-echo "$(date +%F', '%T): Starting VRSC daemon." >${SCRIPT_PATH}/start-staker.txt
+echo "$(date +%F', '%T): Starting VRSC daemon." >${SCRIPT_PATH}/start-verus.log
 ${SCRIPT_PATH}/verusd -daemon "$@" 1>/dev/null 2>&1
 
 ## check if the daemon has started in a loop
@@ -57,7 +57,7 @@ until [ $dstat == 1 ]; do
     *) dstat=1 ;;
   esac
 done
-echo "$(date +%F', '%T): VRSC daemon started and connected." >>${SCRIPT_PATH}/start-staker.txt
+echo "$(date +%F', '%T): VRSC daemon started and connected." >>${SCRIPT_PATH}/start-verus.log
 
 ## Check if the node is fully synchronized
 
@@ -85,7 +85,7 @@ while [[ ! "$CHECK_STATUS" == "OK" ]]; do
   fi
   sleep 15s
 done
-echo "$(date +%F', '%T): VRSC daemon is synchronized. Block: "$HEIGHT_LOCAL >>${SCRIPT_PATH}/start-staker.txt
+echo "$(date +%F', '%T): VRSC daemon is synchronized. Block: "$HEIGHT_LOCAL >>${SCRIPT_PATH}/start-verus.log
 
 ## Check if the node is forked
 
@@ -109,4 +109,4 @@ while [[ ! "$CHECK_STATUS" == "OK" ]]; do
   fi
   sleep 5s
 done
-echo "$(date +%F', '%T): VRSC hash matches remote: not on a fork. Hash: "$HASH_LOCAL >>${SCRIPT_PATH}/start-staker.txt
+echo "$(date +%F', '%T): VRSC hash matches remote: not on a fork. Hash: "$HASH_LOCAL >>${SCRIPT_PATH}/start-verus.log
