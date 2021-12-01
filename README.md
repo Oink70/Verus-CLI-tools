@@ -1,12 +1,13 @@
 # Verus-CLI-tools
-
+A collection of scripts to simplify life on CLI.
+These tools are tested on Linux Ubuntu 20.04LTS, Debian 10 and Debian 11
 
 ## Content
  - `auto-verus.sh`: install or upgrade Verus binaries
  - `start-verus.sh`: Start Verus with fork and height checks
 
-### auto-verus.sh
-##### Description
+## auto-verus.sh
+### Description
 1) if no `verusd` binary is found in the path or local folder:
  - Download the latest official version from the VerusCoin Github repository, based on OS and processor architecture (yes, it works on ARM-linux as well).
  - Check the download using SHA256.
@@ -29,14 +30,14 @@
  - Rename the existing binaries to `*-old`.
  - Call the `fetch-bootstrap` script from the downloaded release (downloads, verifies and extracts *bootstrap archive*).
  - start the Verus wallet (CLI) with `-zapwallettxes=2 -rescan` options
-##### Prerequisites
+### Prerequisites
  - Linux OS
  - `curl` and `jq` installed
-##### Usage
+### Usage
  - Execute `auto-verus.sh`. Command line parameters are ignored.
 
-### start-verus.sh
-##### Description
+## start-verus.sh
+### Description
  1) Start the Verus daemon, and the script waits to return to the command line, until the following conditions are met:
   - The node has connected to at least one other node.
   - The node is fully synchronized (It compares the local blockheight to the Verus explorer blockheight).
@@ -44,14 +45,14 @@
 2) Progress is logged in the script folder in the `start-verus.log` file in the script folder
 Possible use cases for this script include starting any other application that relies on verus being
 fully synchronized and unforked, such as an explorer, pool, exchange or any other application.
-##### Prerequisites
+### Prerequisites
  - Linux OS
  - `bc`, `curl`, `jq` and `tr` installed
  - The script is placed in the directory containing the `verusd` and `verus` binaries.
-##### Usage
+### Usage
  - Execute `start-verus.sh`. Command line parameters are passed as `verusd` startup parameters.
 
-## DISCLAIMER
+# DISCLAIMER
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
 The above copyright notices and this permission notice shall be included in all copies or substantial portions of the Software.
