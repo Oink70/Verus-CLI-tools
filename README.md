@@ -40,10 +40,10 @@ These tools are tested on Linux Ubuntu 20.04LTS, Debian 10 and Debian 11
 
 ## start-verus.sh
 ### Description
- 1) Start the Verus daemon, and the script waits to return to the command line, until the following conditions are met:
-   - The node has connected to at least one other node.
-   - The node is fully synchronized (It compares the local blockheight to the Verus explorer blockheight).
-   - The latest blockhash on the node is equal to the blockhash for that block on the Verus explorer.
+1) Start the Verus daemon, and the script waits to return to the command line, until the following conditions are met:
+  - The node has connected to at least one other node.
+  - The node is fully synchronized (It compares the local blockheight to the Verus explorer blockheight).
+  - The latest blockhash on the node is equal to the blockhash for that block on the Verus explorer.
 2) Progress is logged in the script folder in the `start-verus.log` file in the script folder
 Possible use cases for this script include starting any other application that relies on verus being
 fully synchronized and unforked, such as an explorer, pool, exchange or any other application.
@@ -55,6 +55,20 @@ fully synchronized and unforked, such as an explorer, pool, exchange or any othe
 
 ### Usage
  - Execute `start-verus.sh`. Command line parameters are passed as `verusd` startup parameters.
+
+## stake-tracker.sh
+### Description
+1) Checks the wallet transactions for stakes over the past 24 hours and adds the result to a text files
+
+### Prerequisites
+ - Linux OS
+ - `bc` and `jq` installed
+ - The location of the `verus` binary is set on line 10 of the script.
+ - The location and name of the export logfile are set on line 11 of the script.
+
+### Usage
+ - Execute `stake-tracker.sh`. For consistend results, best to run on a daily schedule from your `crontab`.
+
 
 # DISCLAIMER
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
