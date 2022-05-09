@@ -100,13 +100,32 @@ Scans the running `vrsctest` chain for PBaaS chains and starts them if they are 
  - Linux OS
  - `jq` installed
  - `vrsctest` chain running and synchronized
+ - user and locations configured in the script file
+ - `root` access
 
 ### Usage
-`./launch-pbaas-chains.sh`
+`./launch-pbaas-chains.sh` as `root` user.
 
 ### notice
 Very basic script, no sanity checks.
 
+## verus-ufw.sh
+### Description
+Scans the main chain (`vrsctest`) for defined PBaaS chains, tries to get each chains info and if successful use that info to open the P2P port for that chain.
+
+### Prerequisites
+  - Linux OS
+  - `ufw` firewall installed (standard linux)
+  - `jq` installed
+  - chains running
+  - user and locations configured in the script file
+  - `root` access
+
+### Usage
+`./verus-ufw.sh` as `root` user.
+
+### notice
+Very basic script, no sanity checks.
 
 
 # DISCLAIMER
