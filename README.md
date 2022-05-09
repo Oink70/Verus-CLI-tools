@@ -84,11 +84,30 @@ Loosely based on scripts from https://github.com/alexenglish/VerusExtras
  - `bc` and `jq` installed
  - at least the configured `config` file from https://github.com/alexenglish/VerusExtras
 
-### Usage: ./consolidator.sh [options]
+### Usage
+`./consolidator.sh [options]`
 ##### Options:
 `-max # || --maximum-size #`  :The maximum UTXO size to include in the consolidation. (default 2500).4
 `-np    || --no-privacy`      : Do not delay between consolidating multiple addresses, finishing quickly, but also creating the possibility of correlating the addresses based on time.
 `-mu #  || --minimum-utxos #` :The minimum number of UTXOs to include in the consolidation. (default 5).
+
+# Scripts currently only usable on testnet
+## launch-pbaas-chains.sh
+### Description
+Scans the running `vrsctest` chain for PBaaS chains and starts them if they are not running yet
+
+### Prerequisites
+ - Linux OS
+ - `jq` installed
+ - `vrsctest` chain running and synchronized
+
+### Usage
+`./launch-pbaas-chains.sh`
+
+### notice
+Very basic script, no sanity checks.
+
+
 
 # DISCLAIMER
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
