@@ -111,7 +111,8 @@ Very basic script, no sanity checks.
 
 ## verus-ufw.sh
 ### Description
-Scans the main chain (`vrsctest`) for defined PBaaS chains, tries to get each chains info and if successful use that info to open the P2P port for that chain.
+Checks the `ufw` for previously created rules by this script and removes them, then scans the main chain (`vrsctest`) for defined PBaaS chains, tries to get each chains info and if 
+successful, use that info to open the P2P port for that chain.
 
 ### Prerequisites
   - Linux OS
