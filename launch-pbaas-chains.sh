@@ -15,7 +15,7 @@ do
   then
     echo "chain ${i} is already running"
   else
-    su "${USER}" -c "${VERUSD} -chain=${i}  1>/dev/null 2>&1"
+    su "${USER}" -c "${VERUSD} -chain=${i} -daemon 1>/dev/null 2>&1"
   fi
 done
 
