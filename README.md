@@ -3,9 +3,14 @@ A collection of scripts to simplify life on CLI.
 These tools are tested on Linux Ubuntu 20.04LTS, Debian 10 and Debian 11
 Some of these scripts are based on code written by Alex English (https://github.com/alexenglish/VerusExtras)
 
-## Content
+## Content suitable for mainnet:
  - `auto-verus.sh`: install or upgrade Verus binaries
  - `start-verus.sh`: Start Verus with fork and height checks
+ - `stake-tracker.sh`: Counts all stakes in the past 24 hours. Differntiates between orphans and successful stakes.
+ - `consolidate.sh`: consolidates UTXOs in your wallet below the treshold value.
+ ## content only usable on testnet:
+ - `launch-pbaas-chains.sh`: launches all PBaaS chains known on the VRSCTEST network.
+ - `verus-ufw.sh`: Opens UFW ports for all testnet chains that are running.
 
 ## auto-verus.sh
 ### Description
