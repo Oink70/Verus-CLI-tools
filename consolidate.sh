@@ -5,9 +5,9 @@
 #This script looks for unspent transactions below the supplied limit (if none supplied smaller than 2500) and spends them back to the same address. If there are multiple UTXOs on an address, this consolidates them into one output. Privacy is preserved because this 
 #doesn't comingle any addresses. Furthermore, the option is given to allow for a random delay of 5 to 15 minutes between transaction submissions, so the transactions don't show up as a burst, but are metered over time, likely no more than one per block.
 #The standard minimum amount of UTXOs being consolidated is 5, but can be altered using the -np command line option
-#The maximum amount of UTXOs being consolidated on a single address is 400.
+#The maximum amount of UTXOs being consolidated on a single address is 250.
 
-#Usage: ./consolidator.sh [-max || --maximum-size] [-np || --noprivacy]
+#Usage: ./consolidate.sh [-max || --maximum-size] [-np || --noprivacy]
 #maxvalue is the upper limit of the UTXO sizes to consolidate. If not provided a standard value of 2500 is used.
 #Unless -np||--no-privacy a delay is used between addresses to increase privacy. If false is passed, all actions will be performed without delay, finishing quickly, but also creating the possibility of correlating the addresses based on time.
 
@@ -56,15 +56,15 @@ while [[ $# -gt 0 ]]; do
       shift # past value
       ;;
     -h|--help)
-      printf "\nUsage:\n\nconsolidator.sh [options]\n\n"
+      printf "\nUsage:\n\nconsolidate.sh [options]\n\n"
       printf "Options:\n\n"
       printf "\t-max #\t--maximum-size # :\tThe maximum UTXO size to include in the consolidation. (default 2500)\n"
       printf "\t-np\t--no-privacy :\t\tDo not delay between consolidating multiple addresses, finishing quickly, but also creating the possibility of correlating the addresses based on time.\n"
       printf "\t-mu #\t--minimum-utxos # :\tThe minimum number of UTXOs to include in the consolidation. (default 5)\n"
       printf "\nExamples:\n\n"
-      printf "consolidator.sh -max 1000\t\tConsolidate all UTXOs containing less than 1000 into a single UTXO, using the standard privacy enhancing delay\n"
-      printf "consolidator.sh -np\t\t\tConsolidate all UTXOs containing less than 2500 into a single UTXO, fast, with no regards to privacy accross addresses\n"
-      printf "consolidator.sh -np -max 25 -mu 10\t\tConsolidate all UTXOs (at least 10)  containing less than 25 into a single UTXO, fast, with no regards to privacy accross addresses\n"
+      printf "consolidate.sh -max 1000\t\tConsolidate all UTXOs containing less than 1000 into a single UTXO, using the standard privacy enhancing delay\n"
+      printf "consolidate.sh -np\t\t\tConsolidate all UTXOs containing less than 2500 into a single UTXO, fast, with no regards to privacy accross addresses\n"
+      printf "consolidate.sh -np -max 25 -mu 10\t\tConsolidate all UTXOs (at least 10)  containing less than 25 into a single UTXO, fast, with no regards to privacy accross addresses\n"
       printf "\n"
       exit 0
       ;;
@@ -110,7 +110,7 @@ for F in `ls -1A $DB`; do
 			INAMOUNT=$(awk '{print $5}' <<<"$L")
 			AMOUNT=$(bc<<<"$AMOUNT+$INAMOUNT")
                         ((COUNTER++))
-                        if [[ "$COUNTER" == '400' ]]; then
+                        if [[ "$COUNTER" == '250' ]]; then
                                 break
                         fi
 		done < "$DB/$F"
