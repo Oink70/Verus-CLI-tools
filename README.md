@@ -82,7 +82,7 @@ Loosely based on scripts from https://github.com/alexenglish/VerusExtras
 2) If there are multiple UTXOs on an address, this consolidates them into one output. Privacy is preserved because this doesn't comingle any addresses.
    Furthermore, the option is given to allow for a random delay of 5 to 15 minutes between transaction submissions, so the transactions don't show up as a burst, but are metered over time, likely no more than one per block.
 3) The standard minimum amount of UTXOs being consolidated is 5, but can be altered using the -np command line option
-4) The maximum amount of UTXOs being consolidated on a single address is 400.
+4) The maximum amount of UTXOs being consolidated on a single transaction is set to 250. The script will create multiple transactions if needed.
 
 ### Prerequisites
  - Linux OS
