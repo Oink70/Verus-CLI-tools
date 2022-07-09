@@ -90,7 +90,7 @@ Loosely based on scripts from https://github.com/alexenglish/VerusExtras
  - at least the configured `config` file from https://github.com/alexenglish/VerusExtras
 
 ### Usage
-`./consolidator.sh [options]`
+`./consolidate.sh [options]`
 ##### Options:
 `-max # || --maximum-size #`  :The maximum UTXO size to include in the consolidation. (default 2500).4
 `-np    || --no-privacy`      : Do not delay between consolidating multiple addresses, finishing quickly, but also creating the possibility of correlating the addresses based on time.
