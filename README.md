@@ -94,10 +94,10 @@ Loosely based on scripts from https://github.com/alexenglish/VerusExtras
 ### Usage
 `./consolidate.sh [options]`
 ##### Options:
-`-max # || --maximum-size #`  : The maximum UTXO size to include in the consolidation. (default 2500).4
-`-np    || --no-privacy`      : Do not delay between consolidating multiple addresses, finishing quickly, but also creating the possibility of correlating the addresses based on time.
-`-mu #  || --minimum-utxos #` : The minimum number of UTXOs to include in the consolidation. (default 5).
-`-h     || --help`            : Displays help text on the console.
+ - `-max # || --maximum-size #`  : The maximum UTXO size to include in the consolidation. (default 2500).4
+ - `-np    || --no-privacy`      : Do not delay between consolidating multiple addresses, finishing quickly, but also creating the possibility of correlating the addresses based on time.
+ - `-mu #  || --minimum-utxos #` : The minimum number of UTXOs to include in the consolidation. (default 5).
+ - `-h     || --help`            : Displays help text on the console.
 
 ## PoW-rewards.sh
 ### Description
@@ -112,12 +112,12 @@ Shows how many mining block rewards addresses got over a specified time frame.
 ### Usage
 `./PoW-rewards.sh [options]`
 ##### Options:
-`-t # || --time-window #`     : Set an arbitrary time window (default 24hours). This amount will be deducted from the end date to determine the start date.
+ - `-t # || --time-window #`     : Set an arbitrary time window (default 24hours). This amount will be deducted from the end date to determine the start date.
                                 Requires #minute/#hour/#day/#week/#month/#year.
-`-s # || --start #`           : Set a start date (00:00 UTC). Overrides the time window. Requires time in YYYY-MM-DD format.
-`-e # || --end #`             : Set an end date (00:00 UTC). if not set, it uses the current time. Requires time in YYYY-MM-DD format.
-`-t # || --filter-file #`     : Specify a custum filterfile for the sed function to identify known addresses.
-`-h   || --help`              : Displays help text on the console.
+ - `-s # || --start #`           : Set a start date (00:00 UTC). Overrides the time window. Requires time in YYYY-MM-DD format.
+ - `-e # || --end #`             : Set an end date (00:00 UTC). if not set, it uses the current time. Requires time in YYYY-MM-DD format.
+ - `-t # || --filter-file #`     : Specify a custum filterfile for the sed function to identify known addresses.
+ - `-h   || --help`              : Displays help text on the console.
 
 # Scripts currently only usable on testnet
 ## launch-pbaas-chains.sh
@@ -139,7 +139,7 @@ Very basic script, no sanity checks.
 
 ## verus-ufw.sh
 ### Description
-Checks the `ufw` for previously created rules by this script and removes them, then scans the main chain (`vrsctest`) for defined PBaaS chains, tries to get each chains info and if 
+Checks the `ufw` for previously created rules by this script and removes them, then scans the main chain (`vrsctest`) for defined PBaaS chains, tries to get each chains info and if
 successful, use that info to open the P2P port for that chain.
 
 ### Prerequisites
