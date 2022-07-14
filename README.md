@@ -8,6 +8,7 @@ Some of these scripts are based on code written by Alex English (https://github.
  - `start-verus.sh`: Start Verus with fork and height checks
  - `stake-tracker.sh`: Counts all stakes in the past 24 hours. Differntiates between orphans and successful stakes.
  - `consolidate.sh`: consolidates UTXOs in your wallet below the treshold value.
+ - `PoW-rewards.sh`: Shows how many mining block rewards addresses got over a specified time frame.
  ## content only usable on testnet:
  - `launch-pbaas-chains.sh`: launches all PBaaS chains known on the VRSCTEST network.
  - `verus-ufw.sh`: Opens UFW ports for all testnet chains that are running.
@@ -88,13 +89,35 @@ Loosely based on scripts from https://github.com/alexenglish/VerusExtras
  - Linux OS
  - `bc` and `jq` installed
  - at least the configured `config` file from https://github.com/alexenglish/VerusExtras
+ - a running `Verusd` daemon
 
 ### Usage
 `./consolidate.sh [options]`
 ##### Options:
-`-max # || --maximum-size #`  :The maximum UTXO size to include in the consolidation. (default 2500).4
+`-max # || --maximum-size #`  : The maximum UTXO size to include in the consolidation. (default 2500).4
 `-np    || --no-privacy`      : Do not delay between consolidating multiple addresses, finishing quickly, but also creating the possibility of correlating the addresses based on time.
-`-mu #  || --minimum-utxos #` :The minimum number of UTXOs to include in the consolidation. (default 5).
+`-mu #  || --minimum-utxos #` : The minimum number of UTXOs to include in the consolidation. (default 5).
+`-h     || --help`            : Displays help text on the console.
+
+## PoW-rewards.sh
+### Description
+Shows how many mining block rewards addresses got over a specified time frame.
+
+### Prerequisites
+ - Linux OS
+ - `bc` and `jq` installed
+ - The `verus` binary in the PATH environment. If not found it falls back to the location of the `verus` binary is set on line 9 of the script.
+ - a running `Verusd` daemon
+
+### Usage
+`./PoW-rewards.sh [options]`
+##### Options:
+`-t # || --time-window #`     : Set an arbitrary time window (default 24hours). This amount will be deducted from the end date to determine the start date.
+                                Requires #minute/#hour/#day/#week/#month/#year.
+`-s # || --start #`           : Set a start date (00:00 UTC). Overrides the time window. Requires time in YYYY-MM-DD format.
+`-e # || --end #`             : Set an end date (00:00 UTC). if not set, it uses the current time. Requires time in YYYY-MM-DD format.
+`-t # || --filter-file #`     : Specify a custum filterfile for the sed function to identify known addresses.
+`-h   || --help`              : Displays help text on the console.
 
 # Scripts currently only usable on testnet
 ## launch-pbaas-chains.sh
