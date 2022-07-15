@@ -101,11 +101,12 @@ Loosely based on scripts from https://github.com/alexenglish/VerusExtras
 
 ## PoW-rewards.sh
 ### Description
-Shows how many mining block rewards addresses got over a specified time frame.
+Shows how many mining block rewards addresses got over a specified time frame. It uses the `sed` filter file `KnownPoolAddresses.sed` by default to identify known addresses.
 
 ### Prerequisites
  - Linux OS
  - `bc` and `jq` installed
+ - `KnownPoolAddresses.sed` file in the script folder
  - The `verus` binary in the PATH environment. If not found it falls back to the location of the `verus` binary is set on line 9 of the script.
  - a running `Verusd` daemon
 
@@ -113,7 +114,49 @@ Shows how many mining block rewards addresses got over a specified time frame.
 `./PoW-rewards.sh [options]`
 ##### Options:
  - `-t # || --time-window #`     : Set an arbitrary time window (default 24hours). This amount will be deducted from the end date to determine the start date.
-                                Requires #minute/#hour/#day/#week/#month/#year.
+                                   Requires #minute/#hour/#day/#week/#month/#year.
+ - `-s # || --start #`           : Set a start date (00:00 UTC). Overrides the time window. Requires time in YYYY-MM-DD format.
+ - `-e # || --end #`             : Set an end date (00:00 UTC). if not set, it uses the current time. Requires time in YYYY-MM-DD format.
+ - `-t # || --filter-file #`     : Specify a custum filterfile for the sed function to identify known addresses.
+ - `-h   || --help`              : Displays help text on the console.
+
+## PoS-rewards.sh
+### Description
+Shows how many staking block rewards addresses got over a specified time frame. It uses the `sed` filter file `KnownStakingAddresses.sed` by default to identify known addresses.
+
+### Prerequisites
+ - Linux OS
+ - `bc` and `jq` installed
+ - `KnownStakingAddresses.sed` file in the script folder
+ - The `verus` binary in the PATH environment. If not found it falls back to the location of the `verus` binary is set on line 9 of the script.
+ - a running `Verusd` daemon
+
+### Usage
+`./PoW-rewards.sh [options]`
+##### Options:
+ - `-t # || --time-window #`     : Set an arbitrary time window (default 24hours). This amount will be deducted from the end date to determine the start date.
+                                   Requires #minute/#hour/#day/#week/#month/#year.
+ - `-s # || --start #`           : Set a start date (00:00 UTC). Overrides the time window. Requires time in YYYY-MM-DD format.
+ - `-e # || --end #`             : Set an end date (00:00 UTC). if not set, it uses the current time. Requires time in YYYY-MM-DD format.
+ - `-t # || --filter-file #`     : Specify a custum filterfile for the sed function to identify known addresses.
+ - `-h   || --help`              : Displays help text on the console.
+
+## PoS-addresses.sh
+### Description
+Shows addresses that are responsible for staked blocks over a specific period of time. It uses the `sed` filter file `KnownStakingAddresses.sed` by default to identify known addresses.
+
+### Prerequisites
+ - Linux OS
+ - `bc` and `jq` installed
+ - `KnownStakingAddresses.sed` file in the script folder
+ - The `verus` binary in the PATH environment. If not found it falls back to the location of the `verus` binary is set on line 9 of the script.
+ - a running `Verusd` daemon
+
+### Usage
+`./PoW-rewards.sh [options]`
+##### Options:
+ - `-t # || --time-window #`     : Set an arbitrary time window (default 24hours). This amount will be deducted from the end date to determine the start date.
+                                   Requires #minute/#hour/#day/#week/#month/#year.
  - `-s # || --start #`           : Set a start date (00:00 UTC). Overrides the time window. Requires time in YYYY-MM-DD format.
  - `-e # || --end #`             : Set an end date (00:00 UTC). if not set, it uses the current time. Requires time in YYYY-MM-DD format.
  - `-t # || --filter-file #`     : Specify a custum filterfile for the sed function to identify known addresses.
