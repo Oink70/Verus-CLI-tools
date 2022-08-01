@@ -117,9 +117,7 @@ fi
 if [ "$TIME_START_SET" == "1" ]
 then
   TIME_WINDOW=""
-#  echo "Start time is set manually, ignoring time-window (if any)" # enable to verify if the check (if-then condition) works as intended.
 else
-#  echo "start time not specified, calculating using and time and time-window." # enable to verify if the check (if-then condition) works as intended.
   TIME_START=$(date -d "$(date -ud @${TIME_END}) - ${TIME_WINDOW}" +"%s")
 fi
 
