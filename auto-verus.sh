@@ -117,7 +117,7 @@ if [[ "${DAEMON_ACTIVE}" == "1" ]]; then
 		# either output empty = unknown
 		if [ -z "${HASH_LOCAL}" ] || [ -z "${HASH_REMOTE}" ]; then
 			CHECK_FORK="UNKNOWN"
-			echo "Chain state could not be determined. Using local chaun."
+			echo "Chain state could not be determined. Using local chain."
 		# equal output = OK
 		elif [ "${HASH_LOCAL}" == "${HASH_REMOTE}" ]; then
 			CHECK_FORK="OK"
@@ -226,37 +226,35 @@ if [[ "${DAEMON_ACTIVE}" == "1" ]]; then
   done
 fi
 
-## in case of a new install, download zcashparams
+## in case of a new install, download zcashparams & bootstrap files
+START_PARAMETERS=""
 if [[ "${NEW_INSTALL}" == "true" ]]; then
-		verus-cli/fetch-params
+        START_PARAMETERS="-bootstrapinstall"
+		#verus-cli/fetch-params
 fi
 
-## in case of a new install or a forked chain, bootstrap the wallet.
-if [[ ("${NEW_INSTALL}" == "true") || ("${CHECK_FORK}" == "CRIT") ]]; then
-		verus-cli/fetch-bootstrap
+## in case of a forked chain, bootstrap the wallet.
+if [[ ("${CHECK_FORK}" == "CRIT") ]]; then
+        START_PARAMETERS="-bootstrap -zapwallettxes=2 -rescan"
+		#verus-cli/fetch-bootstrap
 fi
 
 ## start daemon normally, except for forked chain.
 ## Forked chain will start with `-zapwallettxes=2 -rescan`
 if [[ "${DAEMON_ACTIVE}" == "1" ]]; then
-	if [[ "${CHECK_FORK}" == "CRIT" ]]; then
-		cd ~/.komodo/VRSC
-		${VERUSD} -zapwallettxes=2 -rescan -daemon 1>/dev/null 2>&1 &
-	else
-		cd ~/.komodo/VRSC
-		${VERUSD} -daemon 1>/dev/null 2>&1 &
-	fi
+    cd ~/.komodo/VRSC
+	${VERUSD} ${START_PARAMETERS} -daemon 1>/dev/null 2>&1 &
 else
 	cp ${SCRIPT_PATH}/verus-cli/verusd .
 	cp ${SCRIPT_PATH}/verus-cli/verus .
 	cd ~/.komodo/VRSC
-	${SCRIPT_PATH}/verusd -daemon 1>/dev/null 2>&1 &
+	${SCRIPT_PATH}/verusd ${START_PARAMETERS} -daemon 1>/dev/null 2>&1 &
 fi
 
 if [[ "${NEW_INSTALL}" == "true" ]]; then
 	echo "Verus ${GITHUB_LATEST_RELEASE} is installed."
-	echo "Required Zcash parameters have been downloaded."
-	echo "Bootstrap archive has been downloaded and extracted."
+	echo "Required network parameters will be downloaded by the daemon."
+	echo "Bootstrap archive will be downloaded and extracted by the daemon."
 	echo "Verus daemon is starting up now."
 else
 	echo "Verus is upgraded to ${GITHUB_LATEST_RELEASE}."
@@ -267,5 +265,16 @@ else
 	fi
 	echo "Verus daemon is starting up now."
 fi
+
+sleep 2s
+
+( tail -f -n0 ~/.komodo/VRSC/debug.log & ) | while IFS= read -r line; do
+    echo "${line}"
+    if $(echo "${line}" | grep -q "init message: Done loading") ; then
+        break
+    fi
+done
+
+echo "Your Verus daemon has started and is connecting to peers..."
 
 #EOF

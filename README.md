@@ -18,9 +18,7 @@ Some of these scripts are based on code written by Alex English (https://github.
 1) if no `verusd` binary is found in the path or local folder:
   - Download the latest official version from the VerusCoin Github repository, based on OS and processor architecture (yes, it works on ARM-linux as well).
   - Check the download using SHA256.
-  - Call the `fetch-params` script from the downloaded release (downloads *Zcash parameters* to the required location).
-  - Call the `fetch-bootstrap` script from the downloaded release (downloads, verifies and extracts *bootstrap archive*).
-  - Start the Verus wallet (CLI).
+  - Start the Verus wallet (CLI), instructing it to download and install the network parameters and bootstrap.
 2) if `verusd` binaries are found, but not running:
   - download the latest official version from the VerusCoin Github repository, based on OS and processor architecture.
   - Check the download using SHA256.
@@ -35,8 +33,7 @@ Some of these scripts are based on code written by Alex English (https://github.
   - download the latest official version from the VerusCoin Github repository, based on OS and processor architecture.
   - Check the download using SHA256.
   - Rename the existing binaries to `*-old`.
-  - Call the `fetch-bootstrap` script from the downloaded release (downloads, verifies and extracts *bootstrap archive*).
-  - start the Verus wallet (CLI) with `-zapwallettxes=2 -rescan` options
+  - start the Verus wallet (CLI) with `-bootstrap -zapwallettxes=2 -rescan` options
 
 ### Prerequisites
  - Linux OS
