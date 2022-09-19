@@ -216,6 +216,22 @@ successful, use that info to open the P2P port for that chain.
 ### notice
 Very basic script, no sanity checks.
 
+## check-notarizations.sh
+### Description
+Checks wich PBaaS chains are created and checks the notarization status of the running PBaas chains.
+
+###Prerequisites
+   - Linux OS
+   - `jq` installed
+   - at least `vrsctest` chain running
+   - locations configured in the script file
+
+### Usage
+`./check-notarizations.sh`
+
+### notice
+Fairly basic script, no sanity checks.
+
 
 # DISCLAIMER
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
