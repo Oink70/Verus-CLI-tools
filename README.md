@@ -12,6 +12,7 @@ Some of these scripts are based on code written by Alex English (https://github.
  - `PoS-rewards.sh`: Shows how many staking block rewards addresses got over a specified time frame.
  - `PoS-addresses.sh`: Shows how many staking transactions staking address got over a specified time frame.
  - `Address-delta.sh`: Shows the balance change between two dates for a single address.
+ - `monitor-addresses.sh`: Meant to be run from `-blocknotify=`. Monitors transactions **from** addresses.
 ## content only usable on testnet:
  - `launch-pbaas-chains.sh`: launches all PBaaS chains known on the VRSCTEST network.
  - `verus-ufw.sh`: Opens UFW ports for all testnet chains that are running.
@@ -182,6 +183,24 @@ Shows the balance difference between two timepoints
  - `-e # || --end #`             : Set an end date (00:00 UTC). if not set, it uses the current time. Requires time in YYYY-MM-DD or "YYYY-MM-DD hh:mm:ss" format.
  - `-h   || --help`              : Displays help text on the console.
 
+## monitor-addresses.sh
+This script is meant to be run using the verusd `-blocknotify=/path/monitor-addresses.sh %s` option.
+The script takes blockhash or blockheight as input, checks that block for transactions made from addresses
+that are specified in the file on line 11 of the script (The address file is **not** included).
+If a send is detected from a monitored address it will send a message using the webhook to discord,
+including the blocktime, blockheight, TXID and address(es) that matched.
+
+### Prerequisites
+ - Linux OS
+ - `jq` installed
+ - The `verus` binary in the PATH environment. If not found it falls back to the location of the `verus` binary is set on line 15 of the script.
+ - A webhook for discord.
+ - An address file (text file with one address per line).
+
+### Usage
+`./address-monitor.sh 2234624`
+`./address-monitor.sh 000000000008263f8382f888aeb50e60470f0878fa6d77b549e7e2505a5e0a30`
+`verusd -blocknotify=/path/address-monitor.sh %s`
 
 # Scripts currently only usable on testnet
 ## launch-pbaas-chains.sh
