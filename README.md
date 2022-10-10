@@ -9,9 +9,13 @@ Some of these scripts are based on code written by Alex English (https://github.
  - `stake-tracker.sh`: Counts all stakes in the past 24 hours. Differntiates between orphans and successful stakes.
  - `consolidate.sh`: consolidates UTXOs in your wallet below the treshold value.
  - `PoW-rewards.sh`: Shows how many mining block rewards addresses got over a specified time frame.
- ## content only usable on testnet:
+ - `PoS-rewards.sh`: Shows how many staking block rewards addresses got over a specified time frame.
+ - `PoS-addresses.sh`: Shows how many staking transactions staking address got over a specified time frame.
+ - `Address-delta.sh`: Shows the balance change between two dates for a single address.
+## content only usable on testnet:
  - `launch-pbaas-chains.sh`: launches all PBaaS chains known on the VRSCTEST network.
  - `verus-ufw.sh`: Opens UFW ports for all testnet chains that are running.
+ - `check-notarizations.sh`: Checks the notarization heights of PBaaS chains.
 
 ## auto-verus.sh
 ### Description
