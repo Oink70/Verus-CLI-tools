@@ -198,9 +198,9 @@ including the blocktime, blockheight, TXID and address(es) that matched.
  - An address file (text file with one address per line).
 
 ### Usage
-`./address-monitor.sh 2234624`
-`./address-monitor.sh 000000000008263f8382f888aeb50e60470f0878fa6d77b549e7e2505a5e0a30`
-`verusd -blocknotify=/path/address-monitor.sh %s`
+ - `./address-monitor.sh 2234624`
+ - `./address-monitor.sh 000000000008263f8382f888aeb50e60470f0878fa6d77b549e7e2505a5e0a30`
+ - `verusd -blocknotify=/path/address-monitor.sh %s`
 
 # Scripts currently only usable on testnet
 ## launch-pbaas-chains.sh
