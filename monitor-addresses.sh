@@ -10,7 +10,7 @@
 ## location of the address file containing the addresses to monitor
 ADDRESS_FILE=/home/verus/bin/addresses.txt
 ## URL of the discord webhook, used to send a notification
-WEBHOOK="YOUR-DISCORD-WEBHOOK"
+WEBHOOK="<YOUR-DISCORD-WEBHOOK>"
 ## location of the verus binary
 VERUS="/home/verus/bin/verus"
 
@@ -61,27 +61,40 @@ then
   exit 1
 fi
 
-## Retrieve all transactions from the block.
-TRANSACTIONS=$($VERUS getblock $BLOCKHASH | ${JQ} '.tx')
+## Retrieve the block.
+BLOCK=$($VERUS getblock $BLOCKHASH 2)
+TRANSACTIONS=$(echo $BLOCK | ${JQ} '.tx')
 
 ## Start preparing the message with Blocktime and Blockheight
 MESSAGE="**BlockTime: \`$(date --date=@$($VERUS getblock ${BLOCKHASH} | ${JQ} -r .time))\`**\n"
 MESSAGE+="BlockHeight: **\`$($VERUS getblock ${BLOCKHASH} | ${JQ} -r .height)\`**\n"
 
+## Loop through relevant transactions
+## first determine what type of proof produced a block, in order to ignore worker/staker stransactions
+VALIDATION_TYPE=$(echo $BLOCK | ${JQ} -r '.validationtype')
+if [ "$VALIDATION_TYPE" == "work" ]
+then
+  i=1
+elif [ "$VALIDATION_TYPE" == "stake" ]
+then
+  i=2
+else
+  i=0
+fi
+
 ## Count the number of transactions in the block
 TRANSACTIONS_NUMBER=$(echo $TRANSACTIONS | ${JQ} '. | length')
 
-## Loop through every transaction
-i=0
+## after determination of stransactions to ignore, start looping through remaining transactions
 while [ $i -lt $TRANSACTIONS_NUMBER ]
 do
   ## Get the TXID
-  TXID=$(echo $TRANSACTIONS | ${JQ} -r .[$i])
-  ((i++))
+  TXID=$(echo $TRANSACTIONS | ${JQ} -r .[$i].txid)
   ## Retrieve the addresses from the TXID
-  ADDRESSES=$($VERUS getrawtransaction ${TXID} 1 | ${JQ} -c '.vin | [.[].addresses] | unique')
+  ADDRESSES=$(echo $TRANSACTIONS | ${JQ} -r .[$i] | ${JQ} -c '.vin | [.[].address | @sh] | unique' | tr -d \' | jq -r .[])
   TEMP_MESSAGE=""
   ADD_TO_MESSAGE=false
+  ((i++))
   ## loop through addresses in the address file
   while read -r line; do
     ## Skip empty lines
@@ -90,7 +103,7 @@ do
       break
     fi
     ## check if addresses in the TXID are present in the address file
-    if [ $(echo $ADDRESSES | grep $line) ]
+    if [ $(echo "$ADDRESSES" | grep $line) ]
     then
       ## Add to the prepared message that an address is found
       TEMP_MESSAGE+="Address: **\`${line}\`** is sending funds\n"
@@ -110,5 +123,6 @@ done
 ## If an address is found, send a notification to Discord
 if [ ${FOUND} ]
 then
-  curl -H "Content-Type: application/json" -X POST -d '{"content":"'"${MESSAGE}"'"}'  $WEBHOOK
+  echo $MESSAGE
+#  curl -H "Content-Type: application/json" -X POST -d '{"content":"'"${MESSAGE}"'"}'  $WEBHOOK
 fi
