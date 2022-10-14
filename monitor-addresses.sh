@@ -10,7 +10,7 @@
 ## location of the address file containing the addresses to monitor
 ADDRESS_FILE=/home/verus/bin/addresses.txt
 ## URL of the discord webhook, used to send a notification
-WEBHOOK="<YOUR-DISCORD-WEBHOOK>"
+WEBHOOK="<YOUR_ADDRESS_HOOK>"
 ## location of the verus binary
 VERUS="/home/verus/bin/verus"
 
@@ -66,26 +66,32 @@ BLOCK=$($VERUS getblock $BLOCKHASH 2)
 TRANSACTIONS=$(echo $BLOCK | ${JQ} '.tx')
 
 ## Start preparing the message with Blocktime and Blockheight
-MESSAGE="**BlockTime: \`$(date --date=@$($VERUS getblock ${BLOCKHASH} | ${JQ} -r .time))\`**\n"
-MESSAGE+="BlockHeight: **\`$($VERUS getblock ${BLOCKHASH} | ${JQ} -r .height)\`**\n"
+TITLE="BlockHeight: **\`$($VERUS getblock ${BLOCKHASH} | ${JQ} -r .height)\`**"
+DESCRIPTION="BlockTime: \`$(date --date=@$($VERUS getblock ${BLOCKHASH} | ${JQ} -r .time))\`"
 
 ## Loop through relevant transactions
-## first determine what type of proof produced a block, in order to ignore worker/staker stransactions
+
+declare -i TRANSACTIONS_NUMBER=$(echo $TRANSACTIONS | ${JQ} '. | length')
+
+## Determine what type of proof produced a block, in order to ignore Coinbase reward and staker transactions
 VALIDATION_TYPE=$(echo $BLOCK | ${JQ} -r '.validationtype')
 if [ "$VALIDATION_TYPE" == "work" ]
 then
+  # ignore coinbase transaction
   i=1
 elif [ "$VALIDATION_TYPE" == "stake" ]
 then
-  i=2
+  # ignore coinbase transaction
+  i=1
+  # ignore staking stransction (last transaction in the block
+  TRANSACTIONS_NUMBER=$(echo $TRANSACTIONS | ${JQ} '. | length')-1
 else
+  # should never happen, but if a block is neither work or stake, consider all transactions
   i=0
 fi
 
-## Count the number of transactions in the block
-TRANSACTIONS_NUMBER=$(echo $TRANSACTIONS | ${JQ} '. | length')
-
 ## after determination of stransactions to ignore, start looping through remaining transactions
+FIELDS=""
 while [ $i -lt $TRANSACTIONS_NUMBER ]
 do
   ## Get the TXID
@@ -115,14 +121,22 @@ do
   ## Add TXID and address details to message if one or more matches are found
   if [ "$ADD_TO_MESSAGE" == "true" ]
   then
-    MESSAGE+="TXID ${i}: https://insight.verus.io/tx/$TXID\n"
-    MESSAGE+=$TEMP_MESSAGE
+    if [ ! "$FIELDS" == "" ]
+    then
+      FIELDS+=","
+    fi
+    FIELDS+="{\"name\":\"TXID ${i}: \`${TXID:0:10}...${TXID:59:5}\`: https://insight.verus.io/tx/${TXID}\","
+    FIELDS+="\"value\":\"$TEMP_MESSAGE\",\"inline\":false}"
   fi
 done
+
+## Compose the embed
+MESSAGE="{\"embeds\":[{\"color\": 1127128,\"author\":{\"name\":\"Suspicious Address Check Bot\"},\"title\":\"${TITLE}\",\"description\":\"${DESCRIPTION}\",\"fields\":[${FIELDS}],\"footer\":{\"icon_url\":\"https://cdn.discordapp.com/avatars/454786445702463507/b9ad0b74a4968e5a77930d0a180dd0bd.png?size=4096\",\"text\":\"© Oink 2022\"}}]}"
+
 
 ## If an address is found, send a notification to Discord
 if [ ${FOUND} ]
 then
-  echo $MESSAGE
-#  curl -H "Content-Type: application/json" -X POST -d '{"content":"'"${MESSAGE}"'"}'  $WEBHOOK
+#  echo $MESSAGE | jq .
+  curl -H "Content-Type: application/json" -X POST -d "$(echo ${MESSAGE})"  $WEBHOOK
 fi
