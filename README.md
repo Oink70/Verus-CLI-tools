@@ -111,7 +111,7 @@ Shows how many mining block rewards addresses got over a specified time frame. I
  - `bc` and `jq` installed
  - `KnownPoolAddresses.sed` file in the script folder
  - The `verus` binary in the PATH environment. If not found it falls back to the location of the `verus` binary is set on line 9 of the script.
- - a running `Verusd` daemon
+ - a running `Verusd` daemon with the `-insightexplorer` option.
 
 ### Usage
 `./PoW-rewards.sh [options]`
@@ -132,7 +132,7 @@ Shows how many staking block rewards addresses got over a specified time frame. 
  - `bc` and `jq` installed
  - `KnownStakingAddresses.sed` file in the script folder
  - The `verus` binary in the PATH environment. If not found it falls back to the location of the `verus` binary is set on line 9 of the script.
- - a running `Verusd` daemon
+ - a running `Verusd` daemon with the `-insightexplorer` option.
 
 ### Usage
 `./PoW-rewards.sh [options]`
@@ -153,7 +153,7 @@ Shows addresses that are responsible for staked blocks over a specific period of
  - `bc` and `jq` installed
  - `KnownStakingAddresses.sed` file in the script folder
  - The `verus` binary in the PATH environment. If not found it falls back to the location of the `verus` binary is set on line 9 of the script.
- - a running `Verusd` daemon
+ - a running `Verusd` daemon with the `-insightexplorer` option.
 
 ### Usage
 `./PoW-rewards.sh [options]`
@@ -172,7 +172,7 @@ Shows the balance difference between two timepoints
  - Linux OS
  - `bc` and `jq` installed
  - The `verus` binary in the PATH environment. If not found it falls back to the location of the `verus` binary is set on line 9 of the script.
- - a running `Verusd` daemon
+ - a running `Verusd` daemon with the `-insightexplorer` option.
 
 ### Usage
 `./Address-delta.sh [options]`
