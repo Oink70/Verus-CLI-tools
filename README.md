@@ -13,6 +13,7 @@ Some of these scripts are based on code written by Alex English (https://github.
  - `PoS-addresses.sh`: Shows how many staking transactions staking address got over a specified time frame.
  - `Address-delta.sh`: Shows the balance change between two dates for a single address.
  - `monitor-addresses.sh`: Meant to be run from `-blocknotify=`. Monitors transactions **from** addresses.
+ - `block-stats`: retrieves some key statistics from the chain over a specified time frame.
 ## content only usable on testnet:
  - `launch-pbaas-chains.sh`: launches all PBaaS chains known on the VRSCTEST network.
  - `verus-ufw.sh`: Opens UFW ports for all testnet chains that are running.
@@ -201,6 +202,27 @@ including the blocktime, blockheight, TXID and address(es) that matched.
  - `./address-monitor.sh 2234624`
  - `./address-monitor.sh 000000000008263f8382f888aeb50e60470f0878fa6d77b549e7e2505a5e0a30`
  - `verusd -blocknotify=/path/address-monitor.sh %s`
+
+## block-stats.sh
+Shows statistics about difficulty (max/avg/min), hashrate (max/avg/min), amount of blocks (total/PoW/PoS), Rewards (Total/PoW/PoS), Fees (Total/PoW/PoS).
+
+### Prerequisites
+- Linux OS
+- `bc` and `jq` installed
+- `KnownStakingAddresses.sed` file in the script folder
+- The `verus` binary in the PATH environment. If not found it falls back to the location of the `verus` binary is set on line 9 of the script.
+- a running `Verusd` daemon with the `-insightexplorer` option.
+
+### Usage
+`./block-stats.sh [options]`
+##### Options:
+ - `-a # || --address #`         : (MANDATORY) specify an address to use.
+ - `-t # || --time-window #`     : Set an arbitrary time window (default 24hours). This amount will be deducted from the end date to determine the start date.
+                                   Requires #minute/#hour/#day/#week/#month/#year.
+ - `-s # || --start #`           : Set a start date (00:00 UTC). Overrides the time window. Requires time in YYYY-MM-DD or "YYYY-MM-DD hh:mm:ss" format.
+ - `-e # || --end #`             : Set an end date (00:00 UTC). if not set, it uses the current time. Requires time in YYYY-MM-DD or "YYYY-MM-DD hh:mm:ss" format.
+ - `-h   || --help`              : Displays help text on the console.
+
 
 # Scripts currently only usable on testnet
 ## launch-pbaas-chains.sh
