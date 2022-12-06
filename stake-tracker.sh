@@ -29,7 +29,29 @@ TIME=$(date -d "now - 1 day" +"%s")
 # Set current time
 TIME_NOW=$(date +"%s")
 # determine the amount of blocks in the time interval
-BLOCKS=$($VERUS getblockhashes $TIME_NOW $TIME | $JQ -s '.[] | length')
+
+## Iterate 24 hours based on 1395 average blocks per day
+ITERATE_BLOCK=$(echo $($VERUS getblockcount)-1395 | $BC)
+ITERATE_TIME=$($VERUS getblock $ITERATE_BLOCK | $JQ '.time')
+
+## First decrease the blocknumber to get before the 24 hour boundary
+while [[ $ITERATE_TIME > $TIME ]]
+do
+    ((ITERATE_BLOCK-=1))
+    ITERATE_TIME=$($VERUS getblock $ITERATE_BLOCK | $JQ '.time')
+done
+
+## Second increase the blocknumber to get to the first block in the 24 hour window
+while [[ $ITERATE_TIME < $TIME ]]
+do
+    ((ITERATE_BLOCK+=1))
+    ITERATE_TIME=$($VERUS getblock $ITERATE_BLOCK | $JQ '.time')
+done
+BLOCKS=$(echo "$($VERUS getblockcount)-$ITERATE_BLOCK" | $BC)
+
+## Development break
+exit
+
 # Determine the amount of orphans in the time interval
 ORPHANS=$($VERUS listtransactions "" 999 | $JQ "[.[] | select(.confirmations==-1) | select(.amount==0) | select(.time>=$TIME)]" | $JQ -s ".[] | length")
 # Add 100 to BLOCKS to account for maturation time
