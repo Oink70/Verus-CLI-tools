@@ -77,77 +77,77 @@ done
 
 #listunspent, filter for limit amout
 $VERUS listunspent 1 $CONFS | jq -cr --arg LIMIT "$LIMIT" ".[]|select(.amount<${LIMIT})|.address+\"\t\"+(.confirmations|tostring)+\"\t\"+.txid+\"\t\"+(.vout|tostring)+\"\t\"+(.amount|tostring)" | \
-	while read L; do
-	#for each, look up the block - if it is minted the utxo is staked
-		CONF=$(awk '{print $2}' <<< "$L")
-		#append txid and vout to file named for the address in $DB/
-		ADDR=$(awk '{print $1}' <<<"$L")
-		printf "$L\n" >> "$DB/$ADDR"
-	done
+    while read L; do
+    #for each, look up the block - if it is minted the utxo is staked
+        CONF=$(awk '{print $2}' <<< "$L")
+        #append txid and vout to file named for the address in $DB/
+        ADDR=$(awk '{print $1}' <<<"$L")
+        printf "$L\n" >> "$DB/$ADDR"
+    done
 
-	#format of lines in address files is address, confirmations, txid, vout
+    #format of lines in address files is address, confirmations, txid, vout
 for F in `ls -1A $DB`; do
-	#random delay from 5 minutes to 15 minutes
-	ADDR="$F"
-	INPUTS='['
-	AMOUNT=0
-        UTXOS=$(sed -n "$=" "$DB/$F")
-        COUNTER=0
-        TXCOUNTER=0
-        if [ $UTXOS -ge $MIN ]; then
-                if [ "$USEDELAY" ] && [ "$SENTTRANSACTION" ]; then
-                        DELAY=$((300+RANDOM%600))
-                        date
-                        echo "Using delay for privacy - sleeping $DELAY seconds"
-                        sleep $DELAY
-                        printf "\n"
-                fi
-		while read L; do
-			#build transaction inputs
-			TXID=$(awk '{print $3}' <<<"$L")
-			VOUT=$(awk '{print $4}' <<<"$L")
-			INPUTS="$INPUTS{\"txid\":\"$TXID\",\"vout\":$VOUT},"
-
-			INAMOUNT=$(awk '{print $5}' <<<"$L")
-			AMOUNT=$(bc<<<"$AMOUNT+$INAMOUNT")
-                        ((COUNTER++))
-                        if [[ "$COUNTER" == '250' ]]; then
-                               	INPUTS="${INPUTS%,}]"
-		                OUTAMOUNT=$(bc<<<"$AMOUNT-$DEFAULT_FEE")
-		                OUTPUTS="{\"$ADDR\":$OUTAMOUNT}"
-		                echo "TX $TXCOUNTER: Consolidating and moving $OUTAMOUNT on address $ADDR into a single UTXO"
-                                echo "$((TXCOUNTER*250 + COUNTER)) of $UTXOS UTXOs are being processed."
-		                #createrawtransaction
-	                        TXHEX="$($VERUS createrawtransaction "$INPUTS" "$OUTPUTS")"
-		                #signrawtransaction
-		                SIGNEDTXHEX="$($VERUS signrawtransaction "$TXHEX" | jq -r '.hex')"
-		                # sendrawtransaction
-		                SENTTXID="$($VERUS sendrawtransaction "$SIGNEDTXHEX")"
-		                echo "TXID: $SENTTXID"
-                                SENTTRANSACTION=true
-                                INPUTS='['
-                                AMOUNT=0
-                                COUNTER=0
-                                ((TXCOUNTER++))
-                        fi
-		done < "$DB/$F"
-		INPUTS="${INPUTS%,}]"
-		OUTAMOUNT=$(bc<<<"$AMOUNT-$DEFAULT_FEE")
-		OUTPUTS="{\"$ADDR\":$OUTAMOUNT}"
-		echo "TX $TXCOUNTER: Consolidating and moving $OUTAMOUNT on address $ADDR into a single UTXO"
-                echo "$((TXCOUNTER*250 + COUNTER)) of $UTXOS UTXOs are being processed."
-		#createrawtransaction
-	        TXHEX="$($VERUS createrawtransaction "$INPUTS" "$OUTPUTS")"
-		#signrawtransaction
-		SIGNEDTXHEX="$($VERUS signrawtransaction "$TXHEX" | jq -r '.hex')"
-		#sendrawtransaction
-		SENTTXID="$($VERUS sendrawtransaction "$SIGNEDTXHEX")"
-		echo "TXID: $SENTTXID"
-                printf "\n"
-                SENTTRANSACTION=true
-	else
-		echo "$UTXOS UTXOs in $ADDR below $LIMIT, nothing to do..."
+    #random delay from 5 minutes to 15 minutes
+    ADDR="$F"
+    INPUTS='['
+    AMOUNT=0
+    UTXOS=$(sed -n "$=" "$DB/$F")
+    COUNTER=0
+    TXCOUNTER=0
+    if [ $UTXOS -ge $MIN ]; then
+        if [ "$USEDELAY" ] && [ "$SENTTRANSACTION" ]; then
+            DELAY=$((300+RANDOM%600))
+            date
+            echo "Using delay for privacy - sleeping $DELAY seconds"
+            sleep $DELAY
+            printf "\n"
         fi
+        while read L; do
+            #build transaction inputs
+            TXID=$(awk '{print $3}' <<<"$L")
+            VOUT=$(awk '{print $4}' <<<"$L")
+            INPUTS="$INPUTS{\"txid\":\"$TXID\",\"vout\":$VOUT},"
+
+            INAMOUNT=$(awk '{print $5}' <<<"$L")
+            AMOUNT=$(bc<<<"$AMOUNT+$INAMOUNT")
+            ((COUNTER++))
+            if [[ "$COUNTER" == '250' ]]; then
+                INPUTS="${INPUTS%,}]"
+                OUTAMOUNT=$(bc<<<"$AMOUNT-$DEFAULT_FEE")
+                OUTPUTS="{\"$ADDR\":$OUTAMOUNT}"
+                echo "TX $TXCOUNTER: Consolidating and moving $OUTAMOUNT on address $ADDR into a single UTXO"
+                echo "$((TXCOUNTER*250 + COUNTER)) of $UTXOS UTXOs are being processed."
+                #createrawtransaction
+                TXHEX="$($VERUS createrawtransaction "$INPUTS" "$OUTPUTS")"
+                #signrawtransaction
+                SIGNEDTXHEX="$($VERUS signrawtransaction "$TXHEX" | jq -r '.hex')"
+                # sendrawtransaction
+                SENTTXID="$($VERUS sendrawtransaction "$SIGNEDTXHEX")"
+                echo "TXID: $SENTTXID"
+                SENTTRANSACTION=true
+                INPUTS='['
+                AMOUNT=0
+                COUNTER=0
+                ((TXCOUNTER++))
+            fi
+        done < "$DB/$F"
+        INPUTS="${INPUTS%,}]"
+        OUTAMOUNT=$(bc<<<"$AMOUNT-$DEFAULT_FEE")
+        OUTPUTS="{\"$ADDR\":$OUTAMOUNT}"
+        echo "TX $TXCOUNTER: Consolidating and moving $OUTAMOUNT on address $ADDR into a single UTXO"
+        echo "$((TXCOUNTER*250 + COUNTER)) of $UTXOS UTXOs are being processed."
+        #createrawtransaction
+        TXHEX="$($VERUS createrawtransaction "$INPUTS" "$OUTPUTS")"
+        #signrawtransaction
+        SIGNEDTXHEX="$($VERUS signrawtransaction "$TXHEX" | jq -r '.hex')"
+        #sendrawtransaction
+        SENTTXID="$($VERUS sendrawtransaction "$SIGNEDTXHEX")"
+        echo "TXID: $SENTTXID"
+        printf "\n"
+        SENTTRANSACTION=true
+    else
+        echo "$UTXOS UTXOs in $ADDR below $LIMIT, nothing to do..."
+    fi
 done
 
 rm -rf "$DB"
