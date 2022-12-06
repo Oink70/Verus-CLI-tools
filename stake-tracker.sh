@@ -49,9 +49,6 @@ do
 done
 BLOCKS=$(echo "$($VERUS getblockcount)-$ITERATE_BLOCK" | $BC)
 
-## Development break
-exit
-
 # Determine the amount of orphans in the time interval
 ORPHANS=$($VERUS listtransactions "" 999 | $JQ "[.[] | select(.confirmations==-1) | select(.amount==0) | select(.time>=$TIME)]" | $JQ -s ".[] | length")
 # Add 100 to BLOCKS to account for maturation time
