@@ -13,7 +13,8 @@ Some of these scripts are based on code written by Alex English (https://github.
  - `PoS-addresses.sh`: Shows how many staking transactions staking address got over a specified time frame.
  - `Address-delta.sh`: Shows the balance change between two dates for a single address.
  - `monitor-addresses.sh`: Meant to be run from `-blocknotify=`. Monitors transactions **from** addresses.
- - `monitor-VerusIDs.sh`: Meant to be run from `-blocknotify=`. Monitors Verus Identity updates/creations.
+ - `monitor-VerusIDs.sh`: Meant to be run from `-blocknotify=`. Monitors VerusID updates/creations.
+ - `crawl-VerusID.sh`: crawl a predefined range of blocks on the chain for VerusID updates/creations.
  - `block-stats`: retrieves some key statistics from the chain over a specified time frame.
 ## content only usable on testnet:
  - `launch-pbaas-chains.sh`: launches all PBaaS chains known on the VRSCTEST network.
@@ -204,7 +205,7 @@ including the blocktime, blockheight, TXID and address(es) that matched.
  - `./address-monitor.sh 000000000008263f8382f888aeb50e60470f0878fa6d77b549e7e2505a5e0a30`
  - `verusd -blocknotify=/path/address-monitor.sh %s`
 
-## monitor-VerusIDs.sh
+## monitor-VerusID.sh
 This script is meant to be run using the verusd `-blocknotify=/path/monitor-addresses.sh %s` option.
 The script takes blockhash or blockheight as input, checks that block for Identity update transactions.
 By default it writes the ID-name and i-address to a file specified at line 11 of the script, but the
@@ -217,9 +218,24 @@ this script to their desires.
  - The `verus` binary in the PATH environment. If not found it falls back to the location of the `verus` binary is set on line 15 of the script.
 
 ### Usage
- - `./monitor-VerusIDs.sh 2234624`
- - `./monitor-VerusIDs.sh 000000000008263f8382f888aeb50e60470f0878fa6d77b549e7e2505a5e0a30`
- - `verusd -blocknotify=/path/monitor-VerusIDs.sh %s`
+ - `./monitor-VerusID.sh 2234624`
+ - `./monitor-VerusID.sh 000000000008263f8382f888aeb50e60470f0878fa6d77b549e7e2505a5e0a30`
+ - `verusd -blocknotify=/path/monitor-VerusID.sh %s`
+
+## crawl-VerusID.sh
+The script uses a range of blocks from lines 14-15 and checks that range for Identity update transactions.
+By default it writes the ID-name and i-address to a file specified at line 10 of the script, but the
+section that takes action has a remark indicating it is the "action" section, so anyone can adjust
+this script to their desires.
+Since crawling large numbers of blocks is a time-consuming action, a block counter will be displayed in the terminal.
+
+### Prerequisites
+ - Linux OS
+ - `jq` installed
+ - The `verus` binary in the PATH environment. If not found it falls back to the location of the `verus` binary is set on line 15 of the script.
+
+### Usage
+ - `./crawl-VerusID.sh` (command line options are ignored)
 
 ## block-stats.sh
 Shows statistics about difficulty (max/avg/min), hashrate (max/avg/min), amount of blocks (total/PoW/PoS), Rewards (Total/PoW/PoS), Fees (Total/PoW/PoS).
@@ -243,6 +259,7 @@ Shows statistics about difficulty (max/avg/min), hashrate (max/avg/min), amount 
 
 
 # Scripts currently only usable on testnet
+
 ## launch-pbaas-chains.sh
 ### Description
 Scans the running `vrsctest` chain for PBaaS chains and starts them if they are not running yet
