@@ -13,7 +13,7 @@ Some of these scripts are based on code written by Alex English (https://github.
  - `PoS-addresses.sh`: Shows how many staking transactions staking address got over a specified time frame.
  - `Address-delta.sh`: Shows the balance change between two dates for a single address.
  - `monitor-addresses.sh`: Meant to be run from `-blocknotify=`. Monitors transactions **from** addresses.
- - `monitor-VerusIDs.sh`: Meant to be run from `-blocknotify=`. Monitors VerusID updates/creations.
+ - `monitor-VerusID.sh`: Meant to be run from `-blocknotify=`. Monitors VerusID updates/creations.
  - `crawl-VerusID.sh`: crawl a predefined range of blocks on the chain for VerusID updates/creations.
  - `block-stats`: retrieves some key statistics from the chain over a specified time frame.
 ## content only usable on testnet:
