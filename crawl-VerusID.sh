@@ -38,7 +38,7 @@ else
 fi
 
 BLOCKHASH=${START_BLOCK}
-while [ ${END_BLOCK} -gt ${BLOCKHASH} ]
+while [ ${END_BLOCK} -ge ${BLOCKHASH} ]
 do
   ## Retrieve the block.
   BLOCK=$($VERUS getblock $BLOCKHASH 2)
