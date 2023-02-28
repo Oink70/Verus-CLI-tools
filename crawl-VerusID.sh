@@ -42,14 +42,14 @@ while [ ${END_BLOCK} -ge ${BLOCKHASH} ]
 do
   ## Retrieve the block.
   BLOCK=$($VERUS getblock $BLOCKHASH 2)
-  TRANSACTIONS=$(echo $BLOCK | ${JQ} '.tx')
+  TRANSACTIONS=$(echo "$BLOCK" | ${JQ} '.tx')
 
   ## Loop through transactions
 
-  declare -i TRANSACTIONS_NUMBER=$(echo $TRANSACTIONS | ${JQ} '. | length')
+  declare -i TRANSACTIONS_NUMBER=$(echo "$TRANSACTIONS" | ${JQ} '. | length')
 
   ## Determine what type of proof produced a block, in order to ignore Coinbase reward and staker transactions
-  VALIDATION_TYPE=$(echo $BLOCK | ${JQ} -r '.validationtype')
+  VALIDATION_TYPE=$(echo "$BLOCK" | ${JQ} -r '.validationtype')
   if [ "$VALIDATION_TYPE" == "work" ]
   then
   # ignore coinbase transaction
@@ -60,7 +60,7 @@ do
     i=1
     # ignore staking stransaction (last transaction in the block)
     #echo "ignoring staking transaction..."
-    TRANSACTIONS_NUMBER=$(echo $TRANSACTIONS | ${JQ} '. | length')-1
+    TRANSACTIONS_NUMBER=$(echo "$TRANSACTIONS" | ${JQ} '. | length')-1
   else
     # should never happen, but if a block is neither work or stake, consider all transactions
     i=0
@@ -72,20 +72,20 @@ do
   do
     printf 'Block: %s                                                                         \r' ${BLOCKHASH}
     ## Retrieve any ID mutation from the TXID
-    CURRENT_TRANSACTION=$(echo $TRANSACTIONS | ${JQ} -r .[$i])
-    declare -i VOUTS_NUMBER=$(echo $CURRENT_TRANSACTION | ${JQ} '.vout | length')
+    CURRENT_TRANSACTION=$(echo "$TRANSACTIONS" | ${JQ} -r .[$i])
+    declare -i VOUTS_NUMBER=$(echo "$CURRENT_TRANSACTION" | ${JQ} '.vout | length')
     j=0
     while [ $j -lt $VOUTS_NUMBER ]
     do
 	  # detection and extraction of data from the vout in the block
 	  # $ID will receive the identities name and i-address.
 	  # If other data is required the JQ paramaters should be adjusted for that.
-      ID=$(echo $CURRENT_TRANSACTION | ${JQ} .vout[$j].scriptPubKey | $JQ -c -r '[select (.identityprimary != null ) | .identityprimary.name,.identityprimary.identityaddress] | select ( (. | length) > 1 )')
+      ID=$(echo "$CURRENT_TRANSACTION" | ${JQ} .vout[$j].scriptPubKey | $JQ -c -r '[select (.identityprimary != null ) | .identityprimary.name,.identityprimary.identityaddress] | select ( (. | length) > 1 )')
       if [[ ${#ID} > 1 ]]
       then
 	    # Action section:
 		# If a different action is required, the line between this comment and the `fi` should be adjusted/replaced.
-        echo $ID >>$VERUSID_FILE
+        echo "$ID" >>$VERUSID_FILE
       fi
       ((j++))
     done

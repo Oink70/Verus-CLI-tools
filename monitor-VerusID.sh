@@ -51,13 +51,13 @@ fi
 
 ## Retrieve the block.
 BLOCK=$($VERUS getblock $BLOCKHASH 2)
-TRANSACTIONS=$(echo $BLOCK | ${JQ} '.tx')
+TRANSACTIONS=$(echo "$BLOCK" | ${JQ} '.tx')
 
 ## Loop through transactions
-declare -i TRANSACTIONS_NUMBER=$(echo $TRANSACTIONS | ${JQ} '. | length')
+declare -i TRANSACTIONS_NUMBER=$(echo "$TRANSACTIONS" | ${JQ} '. | length')
 
 ## Determine what type of proof produced a block, in order to ignore Coinbase reward and staker transactions
-VALIDATION_TYPE=$(echo $BLOCK | ${JQ} -r '.validationtype')
+VALIDATION_TYPE=$(echo "$BLOCK" | ${JQ} -r '.validationtype')
 if [ "$VALIDATION_TYPE" == "work" ]
 then
   # ignore coinbase transaction
@@ -67,7 +67,7 @@ then
   # ignore coinbase transaction
   i=1
   # ignore staking stransaction (last transaction in the block)
-  TRANSACTIONS_NUMBER=$(echo $TRANSACTIONS | ${JQ} '. | length')-1
+  TRANSACTIONS_NUMBER=$(echo "$TRANSACTIONS" | ${JQ} '. | length')-1
 else
   # should never happen, but if a block is neither work or stake, consider all transactions
   i=0
@@ -78,19 +78,19 @@ fi
 while [ $i -lt $TRANSACTIONS_NUMBER ]
 do
   ## Retrieve any ID mutation from the TXID
-  CURRENT_TRANSACTION=$(echo $TRANSACTIONS | ${JQ} -r .[$i])
-  declare -i VOUTS_NUMBER=$(echo $CURRENT_TRANSACTION | ${JQ} '.vout | length')
+  CURRENT_TRANSACTION=$(echo "$TRANSACTIONS" | ${JQ} -r .[$i])
+  declare -i VOUTS_NUMBER=$(echo "$CURRENT_TRANSACTION" | ${JQ} '.vout | length')
   j=0
   while [ $j -lt $VOUTS_NUMBER ]
   do
     # check the current vout for a identity transaction
 	# if found pass the i-address and identity name into the $ID parameter
-    ID=$(echo $CURRENT_TRANSACTION | ${JQ} .vout[$j].scriptPubKey | $JQ -c -r '[select (.identityprimary != null ) | .identityprimary.name,.identityprimary.identityaddress] | select ( (. | length) > 1 )')
+    ID=$(echo "$CURRENT_TRANSACTION" | ${JQ} .vout[$j].scriptPubKey | $JQ -c -r '[select (.identityprimary != null ) | .identityprimary.name,.identityprimary.identityaddress] | select ( (. | length) > 1 )')
     if [[ ${#ID} > 1 ]]
     then
 	  # Store the found info in a file.
 	  # If you want other/more actions, change this section.
-      echo $ID >>$VERUSID_FILE
+      echo "$ID" >>$VERUSID_FILE
     fi
     ((j++))
   done
