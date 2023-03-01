@@ -7,12 +7,13 @@
 ## specified in line 10
 
 ## location of the Verus ID file to store detected IDs
-VERUSID_FILE="/home/coins/bin/VerusIDs.txt"
+VERUSID_FILE="/home/verus/bin/VerusIDs.txt"
 ## location of the verus binary
 VERUS="/home/verus/bin/verus"
 ## start block enabling VerusIDs
 START_BLOCK=800200
 END_BLOCK=800210
+THREADS=$(nproc)
 
 ## Check if the Verus binary is found and verusd is running.
 ## If Verus exists in the PATH environment, use it.
@@ -30,60 +31,15 @@ else
 fi
 
 ## Dependencies: jq
-if ! command -v jq &>/dev/null ; then
-    echo "jq not found. please install using your package manager."
-    exit 1
+if ! command -v jq &>/dev/null
+then
+  echo "jq not found. please install using your package manager."
+  exit 1
 else
-    JQ=$(which jq)
+  JQ=$(which jq)
 fi
 
-BLOCKHASH=${START_BLOCK}
-while [ ${END_BLOCK} -ge ${BLOCKHASH} ]
-do
-  ## Retrieve the block.
-  BLOCK=$($VERUS getblock $BLOCKHASH 2)
-  TRANSACTIONS=$(echo "$BLOCK" | ${JQ} '.tx')
-
-  ## Loop through transactions
-
-  declare -i TRANSACTIONS_NUMBER=$(echo "$TRANSACTIONS" | ${JQ} '. | length')
-
-  ## Determine what type of proof produced a block, in order to ignore Coinbase reward and staker transactions
-  VALIDATION_TYPE=$(echo "$BLOCK" | ${JQ} -r '.validationtype')
-  if [ "$VALIDATION_TYPE" == "work" ]
-  then
-  # ignore coinbase transaction
-  i=1
-  elif [ "$VALIDATION_TYPE" == "stake" ]
-  then
-    # ignore coinbase transaction
-    i=1
-    # ignore staking stransaction (last transaction in the block)
-    #echo "ignoring staking transaction..."
-    TRANSACTIONS_NUMBER=$(echo "$TRANSACTIONS" | ${JQ} '. | length')-1
-  else
-    # should never happen, but if a block is neither work or stake, consider all transactions
-    i=0
-    exit 1
-  fi
-
-  ## after determination of stransactions to ignore, start looping through remaining transactions
-  while [ $i -lt $TRANSACTIONS_NUMBER ]
-  do
-    printf 'Block: %s                                                                         \r' ${BLOCKHASH}
-    ## Retrieve any ID mutation from the TXID
-    CURRENT_TRANSACTION=$(echo "$TRANSACTIONS" | ${JQ} -r .[$i])
-    declare -i VOUTS_NUMBER=$(echo "$CURRENT_TRANSACTION" | ${JQ} '.vout | length')
-    VOUTS="0"
-    j=0
-    while [ $j -lt $VOUTS_NUMBER ]
-    do
-      ((j++))
-      VOUTS="$VOUTS\n$j"
-    done
-    echo -e "$VOUTS" | xargs -I "{}" -P $(nproc) .check-vouts.sh "$JQ" "$VERUSID_FILE" "$CURRENT_TRANSACTION" {}
-    ((i++))
-  done
-  ((BLOCKHASH++))
-done
- printf 'Done......                                                                         \n'
+echo "Crawling blockchain with parallel processes."
+BLOCKLIST=$(seq $START_BLOCK $END_BLOCK)
+echo "$BLOCKLIST" | xargs -I "{}" -P $THREADS ./monitor-VerusID.sh {} "$VERUSID_FILE" "$JQ" "$VERUS"
+echo "Done....                                                             "

@@ -7,37 +7,37 @@
 ## If a mutation is detected, store the ID-name and i-address in a file
 ## specified in line 11
 
+## default variable definitions
 ## location of the Verus ID file to store detected IDs
 VERUSID_FILE="/home/verus/bin/VerusIDs.txt"
 ## location of the verus binary
 VERUS="/home/verus/bin/verus"
+## location of jq binary
+JQ=$(which jq)
 
 
-## Check if the Verus binary is found and verusd is running.
-## If Verus exists in the PATH environment, use it.
-## If not, fall back to predefined location in this script.
-if command -v verus &>/dev/null
+## Retrieve parameters passed through CLI command
+if [ $# = 1 ]
 then
-  VERUS=$(which verus)
-elif command -v $VERUS &>/dev/null
+  BLOCKHASH="$1"
+elif [ $# = 2 ]
 then
-  break
-else
-  echo "verus not found in your PATH environment or in the location specified in line 13 of this script."
-  echo "Exiting..."
-  exit 1
-fi
-
-## Dependencies: jq
-if ! command -v jq &>/dev/null ; then
-    echo "jq not found. please install using your package manager."
-    exit 1
-else
-    JQ=$(which jq)
+  BLOCKHASH="$1"
+  VERUSID_FILE="$2"
+elif [ $# = 3 ]
+then
+  BLOCKHASH="$1"
+  VERUSID_FILE="$2"
+  JQ="$3"
+elif [ $# = 4 ]
+then
+  BLOCKHASH="$1"
+  VERUSID_FILE="$2"
+  JQ="$3"
+  VERUS="$4"
 fi
 
 ## check if a there's a value passed to the script.
-BLOCKHASH=$1
 if [ "$BLOCKHASH" == "" ]
 then
   echo "No blockhash or blockheight received."
@@ -55,6 +55,7 @@ TRANSACTIONS=$(echo "$BLOCK" | ${JQ} '.tx')
 
 ## Loop through transactions
 declare -i TRANSACTIONS_NUMBER=$(echo "$TRANSACTIONS" | ${JQ} '. | length')
+printf "Checking block %s with %s transactions.                \r" "$BLOCKHASH" "$TRANSACTIONS_NUMBER"
 
 ## Determine what type of proof produced a block, in order to ignore Coinbase reward and staker transactions
 VALIDATION_TYPE=$(echo "$BLOCK" | ${JQ} -r '.validationtype')
