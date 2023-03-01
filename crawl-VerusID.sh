@@ -12,7 +12,7 @@ VERUSID_FILE="/home/coins/bin/VerusIDs.txt"
 VERUS="/home/verus/bin/verus"
 ## start block enabling VerusIDs
 START_BLOCK=800200
-END_BLOCK=2402979
+END_BLOCK=800210
 
 ## Check if the Verus binary is found and verusd is running.
 ## If Verus exists in the PATH environment, use it.
@@ -74,21 +74,14 @@ do
     ## Retrieve any ID mutation from the TXID
     CURRENT_TRANSACTION=$(echo "$TRANSACTIONS" | ${JQ} -r .[$i])
     declare -i VOUTS_NUMBER=$(echo "$CURRENT_TRANSACTION" | ${JQ} '.vout | length')
+    VOUTS="0"
     j=0
     while [ $j -lt $VOUTS_NUMBER ]
     do
-	  # detection and extraction of data from the vout in the block
-	  # $ID will receive the identities name and i-address.
-	  # If other data is required the JQ paramaters should be adjusted for that.
-      ID=$(echo "$CURRENT_TRANSACTION" | ${JQ} .vout[$j].scriptPubKey | $JQ -c -r '[select (.identityprimary != null ) | .identityprimary.name,.identityprimary.identityaddress] | select ( (. | length) > 1 )')
-      if [[ ${#ID} > 1 ]]
-      then
-	    # Action section:
-		# If a different action is required, the line between this comment and the `fi` should be adjusted/replaced.
-        echo "$ID" >>$VERUSID_FILE
-      fi
       ((j++))
+      VOUTS="$VOUTS\n$j"
     done
+    echo -e "$VOUTS" | xargs -I "{}" -P $(nproc) .check-vouts.sh "$JQ" "$VERUSID_FILE" "$CURRENT_TRANSACTION" {}
     ((i++))
   done
   ((BLOCKHASH++))
