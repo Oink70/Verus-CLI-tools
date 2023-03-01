@@ -80,20 +80,13 @@ do
   ## Retrieve any ID mutation from the TXID
   CURRENT_TRANSACTION=$(echo "$TRANSACTIONS" | ${JQ} -r .[$i])
   declare -i VOUTS_NUMBER=$(echo "$CURRENT_TRANSACTION" | ${JQ} '.vout | length')
+  VOUTS="0"
   j=0
   while [ $j -lt $VOUTS_NUMBER ]
   do
-    # check the current vout for a identity transaction
-	# if found pass the i-address and identity name into the $ID parameter
-    ID=$(echo "$CURRENT_TRANSACTION" | ${JQ} .vout[$j].scriptPubKey | $JQ -c -r '[select (.identityprimary != null ) | .identityprimary.name,.identityprimary.identityaddress] | select ( (. | length) > 1 )')
-    if [[ ${#ID} > 1 ]]
-    then
-	  # Store the found info in a file.
-	  # If you want other/more actions, change this section.
-      echo "$ID" >>$VERUSID_FILE
-    fi
     ((j++))
+    VOUTS="$VOUTS\n$j"
   done
+  echo -e "$VOUTS" | xargs -I "{}" -P $(nproc) .check-vouts.sh "$JQ" "$VERUSID_FILE" "$CURRENT_TRANSACTION" {}
   ((i++))
 done
-
