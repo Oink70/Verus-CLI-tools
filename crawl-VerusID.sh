@@ -6,6 +6,9 @@
 ## If a mutation is detected, store the ID-name and i-address in a file
 ## specified in line 10
 
+## Determine current path
+SCRIPT_PATH=$(dirname $(realpath $0))
+
 ## location of the Verus ID file to store detected IDs
 VERUSID_FILE="/home/verus/bin/VerusIDs.txt"
 ## location of the verus binary
@@ -41,5 +44,5 @@ fi
 
 echo "Crawling blockchain with parallel processes."
 BLOCKLIST=$(seq $START_BLOCK $END_BLOCK)
-echo "$BLOCKLIST" | xargs -I{} -P $THREADS ./monitor-VerusID.sh {} "$VERUSID_FILE" "$JQ" "$VERUS"
+echo "$BLOCKLIST" | xargs -I{} -P $THREADS $SCRIPT_PATH/monitor-VerusID.sh {} "$VERUSID_FILE" "$JQ" "$VERUS"
 echo "Done....                                                             "

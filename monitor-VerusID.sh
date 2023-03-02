@@ -15,6 +15,8 @@ VERUS="/home/verus/bin/verus"
 ## location of jq binary
 JQ=$(which jq)
 
+## Determine current path
+SCRIPT_PATH=$(dirname $(realpath $0))
 
 ## Retrieve parameters passed through CLI command
 if [ $# = 1 ]
@@ -114,7 +116,7 @@ do
         ((j++))
         VOUTS="$VOUTS\n$j"
       done
-      echo -e "$VOUTS" | xargs -I{} -P $(nproc) .check-vouts.sh "$JQ" "$VERUSID_FILE" "$VOUTS_CHUNK" {}
+      echo -e "$VOUTS" | xargs -I{} -P $(nproc) $SCRIPT_PATH/.check-vouts.sh "$JQ" "$VERUSID_FILE" "$VOUTS_CHUNK" {}
     done
   fi
   ((i++))
