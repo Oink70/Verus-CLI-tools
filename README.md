@@ -208,14 +208,18 @@ including the blocktime, blockheight, TXID and address(es) that matched.
 ## monitor-VerusID.sh
 This script is meant to be run using the verusd `-blocknotify=/path/monitor-addresses.sh %s` option.
 The script takes blockhash or blockheight as input, checks that block for Identity update transactions.
-By default it writes the ID-name and i-address to a file specified at line 11 of the script, but the
+By default it writes the ID-name and i-address to a file specified at line 10 of the script, but the
 section that takes action has a remark indicating it is the "action" section, so anyone can adjust
 this script to their desires.
+The current version utilizes multiple threads, greatly improving speed, utilizing more system resources.
+The amount of processes used is the amount of CPU threads.
+The script can be used as standalone (see Usage), but is also called by `crawl-VerusID.sh`.
 
 ### Prerequisites
  - Linux OS
  - `jq` installed
  - The `verus` binary in the PATH environment. If not found it falls back to the location of the `verus` binary is set on line 15 of the script.
+ - `.check-vouts.sh` in the same directory
 
 ### Usage
  - `./monitor-VerusID.sh 2234624`
@@ -228,11 +232,15 @@ By default it writes the ID-name and i-address to a file specified at line 10 of
 section that takes action has a remark indicating it is the "action" section, so anyone can adjust
 this script to their desires.
 Since crawling large numbers of blocks is a time-consuming action, a block counter will be displayed in the terminal.
+The current version utilizes multiple threads, greatly improving crawl speed, utilizing more system resources.
+The amount of processes used is the amount of CPU threads square.
 
 ### Prerequisites
  - Linux OS
  - `jq` installed
  - The `verus` binary in the PATH environment. If not found it falls back to the location of the `verus` binary is set on line 15 of the script.
+ - `monitor-VerusID.sh` in the same directory
+ - `.check-vouts.sh` in the same directory
 
 ### Usage
  - `./crawl-VerusID.sh` (command line options are ignored)

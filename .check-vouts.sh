@@ -9,12 +9,12 @@
 # pull in command line arguments (no checks)
 JQ="$1"
 VERUSID_FILE="$2"
-CURRENT_TRANSACTION="$3"
+TRANSACTION_VOUTS="$3"
 VOUT="$4"
 
 # check the current vout for a identity transaction
 # if found pass the i-address and identity name into the $ID parameter
-ID=$(echo "$CURRENT_TRANSACTION" | ${JQ} .vout[$VOUT].scriptPubKey | $JQ -c -r '[select (.identityprimary != null ) | .identityprimary.name,.identityprimary.identityaddress] | select ( (. | length) > 1 )')
+ID=$(echo "$TRANSACTION_VOUTS" | ${JQ} .[$VOUT].scriptPubKey | $JQ -c -r '[select (.identityprimary != null ) | .identityprimary.name,.identityprimary.identityaddress] | select ( (. | length) > 1 )')
 if [[ ${#ID} > 1 ]]
 then
   # Store the found info in a file.

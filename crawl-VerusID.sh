@@ -12,7 +12,7 @@ VERUSID_FILE="/home/verus/bin/VerusIDs.txt"
 VERUS="/home/verus/bin/verus"
 ## start block enabling VerusIDs
 START_BLOCK=800200
-END_BLOCK=800210
+END_BLOCK=2434031
 THREADS=$(nproc)
 
 ## Check if the Verus binary is found and verusd is running.
@@ -41,5 +41,5 @@ fi
 
 echo "Crawling blockchain with parallel processes."
 BLOCKLIST=$(seq $START_BLOCK $END_BLOCK)
-echo "$BLOCKLIST" | xargs -I "{}" -P $THREADS ./monitor-VerusID.sh {} "$VERUSID_FILE" "$JQ" "$VERUS"
+echo "$BLOCKLIST" | xargs -I{} -P $THREADS ./monitor-VerusID.sh {} "$VERUSID_FILE" "$JQ" "$VERUS"
 echo "Done....                                                             "

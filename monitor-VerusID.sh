@@ -1,11 +1,11 @@
-#!/bin/bash
+#!/bin/bash 
 ## © Oink 2023
 ## This script checks for any ID update/creation transaction
 ## present in the block passed through the command line parameter.
 ## The script is intended to run through `-blocknotify=/path/monitor-VerusID.sh`
 ## of the Verus daemon.
 ## If a mutation is detected, store the ID-name and i-address in a file
-## specified in line 11
+## specified in line 12
 
 ## default variable definitions
 ## location of the Verus ID file to store detected IDs
@@ -51,7 +51,7 @@ fi
 
 ## Retrieve the block.
 BLOCK=$($VERUS getblock $BLOCKHASH 2)
-TRANSACTIONS=$(echo "$BLOCK" | ${JQ} '.tx')
+TRANSACTIONS=$(echo "$BLOCK" | ${JQ} -c '.tx')
 
 ## Loop through transactions
 declare -i TRANSACTIONS_NUMBER=$(echo "$TRANSACTIONS" | ${JQ} '. | length')
@@ -81,13 +81,41 @@ do
   ## Retrieve any ID mutation from the TXID
   CURRENT_TRANSACTION=$(echo "$TRANSACTIONS" | ${JQ} -r .[$i])
   declare -i VOUTS_NUMBER=$(echo "$CURRENT_TRANSACTION" | ${JQ} '.vout | length')
-  VOUTS="0"
-  j=0
-  while [ $j -lt $VOUTS_NUMBER ]
-  do
-    ((j++))
-    VOUTS="$VOUTS\n$j"
-  done
-  echo -e "$VOUTS" | xargs -I "{}" -P $(nproc) .check-vouts.sh "$JQ" "$VERUSID_FILE" "$CURRENT_TRANSACTION" {}
+  TRANSACTION_VOUTS=$(echo "$CURRENT_TRANSACTION" | ${JQ} -c '.vout')
+  ## Determine if the amount of vouts > 0 and <= 250
+  if (( VOUTS_NUMBER >= 1 && VOUTS_NUMBER <= 250 ))
+  then
+    VOUTS="0"
+    j=0
+    while [ $j -lt $VOUTS_NUMBER ]
+    do
+      ((j++))
+      VOUTS="$VOUTS\n$j"
+    done
+    echo -e "$VOUTS" | xargs -I{} -P $(nproc) .check-vouts.sh "$JQ" "$VERUSID_FILE" "$TRANSACTION_VOUTS" {}
+  ## if the number of vouts exceeds 250, the json is too big for xargs.
+  ## cut the amount of vouts up in chuncks of 250 for processing.
+  elif (( VOUTS_NUMBER > 250 ))
+  then
+    CHUNKS=$(seq 0 250 $VOUTS_NUMBER)
+    for k in $CHUNKS;
+    do
+      if (( k < (VOUTS_NUMBER-250) ))
+      then
+        l=$(( k + 250 ))
+        VOUTS_CHUNK=$(echo "$TRANSACTION_VOUTS" | jq -c ".[$k:$l]")
+      else
+        VOUTS_CHUNK=$(echo "$TRANSACTION_VOUTS" | jq -c ".[$k:$VOUTS_NUMBER]")
+      fi
+      VOUTS="0"
+      j=0
+      while [ $j -lt $VOUTS_NUMBER ]
+      do
+        ((j++))
+        VOUTS="$VOUTS\n$j"
+      done
+      echo -e "$VOUTS" | xargs -I{} -P $(nproc) .check-vouts.sh "$JQ" "$VERUSID_FILE" "$VOUTS_CHUNK" {}
+    done
+  fi
   ((i++))
 done
