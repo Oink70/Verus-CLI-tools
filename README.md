@@ -12,6 +12,7 @@ Some of these scripts are based on code written by Alex English (https://github.
  - `PoS-rewards.sh`: Shows how many staking block rewards addresses got over a specified time frame.
  - `PoS-addresses.sh`: Shows how many staking transactions staking address got over a specified time frame.
  - `Address-delta.sh`: Shows the balance change between two dates for a single address.
+ - `blocknotify.sh` : forwards the blockhash received through the verus `-blocknotify=` option to other (multiple) scripts.
  - `monitor-addresses.sh`: Meant to be run from `-blocknotify=`. Monitors transactions **from** addresses.
  - `monitor-VerusID.sh`: Meant to be run from `-blocknotify=`. Monitors VerusID updates/creations.
  - `crawl-VerusID.sh`: crawl a predefined range of blocks on the chain for VerusID updates/creations.
@@ -185,6 +186,31 @@ Shows the balance difference between two timepoints
  - `-s # || --start #`           : Set a start date (00:00 UTC). Overrides the time window. Requires time in YYYY-MM-DD or "YYYY-MM-DD hh:mm:ss" format.
  - `-e # || --end #`             : Set an end date (00:00 UTC). if not set, it uses the current time. Requires time in YYYY-MM-DD or "YYYY-MM-DD hh:mm:ss" format.
  - `-h   || --help`              : Displays help text on the console.
+
+## blocknotify.sh
+This script forwards the blockhash received through the verus
+`-blocknotify=` option to the scripts specified in the text file
+specified on line 11.
+Using this "in-between" script allows calling multiple scripts
+to do whatever they do on blocknotification and process those scripts
+in parallel.
+
+### Prerequisites
+ - Linux OS
+ - Verus daemon, running with the `-blocknotify=/path/blocknotify.sh` option
+ - `scripts` text file containing the script paths and names that need to be executed (See example `scripts` file below)
+ 
+### Usage
+`./blocknotify.sh <blocknumber>|<blockhash>`
+
+### Example `scripts` file
+```bash
+/home/verus/bin/monitor-addresses.sh
+/home/verus/bin/monitor-VerusID.sh
+```
+File format:
+ - use 1 script per line
+ - use the full path to the script
 
 ## monitor-addresses.sh
 This script is meant to be run using the verusd `-blocknotify=/path/monitor-addresses.sh %s` option.
