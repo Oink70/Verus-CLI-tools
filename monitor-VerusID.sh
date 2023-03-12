@@ -5,16 +5,20 @@
 ## The script is intended to run through `-blocknotify=/path/monitor-VerusID.sh`
 ## of the Verus daemon.
 ## If a mutation is detected, store the ID-name and i-address in a file
-## specified in line 12
+## specified in line 14.
 
 ## default variable definitions
 ## location of the Verus ID file to store detected IDs
-VERUSID_FILE="/home/verus/bin/VerusIDs.txt"
+## The name will be appended by `-new.txt`, `-unlock.txt` or
+## `-update.txt`, depending on what is detected.
+export VERUSID_FILE="/home/verus/bin/VerusIDs"
 ## location of the verus binary
-VERUS="/home/verus/bin/verus"
+export VERUS="/home/verus/bin/verus"
 ## location of jq binary
-JQ=$(which jq)
+export JQ=$(which jq)
 
+## Set script folder
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 ## Retrieve parameters passed through CLI command
 if [ $# = 1 ]
@@ -92,7 +96,7 @@ do
       ((j++))
       VOUTS="$VOUTS\n$j"
     done
-    echo -e "$VOUTS" | xargs -I{} -P $(nproc) .check-vouts.sh "$JQ" "$VERUSID_FILE" "$TRANSACTION_VOUTS" {}
+    echo -e "$VOUTS" | xargs -I{} -P $(nproc) $SCRIPT_DIR/.check-vouts.sh "$TRANSACTION_VOUTS" {}
   ## if the number of vouts exceeds 250, the json is too big for xargs.
   ## cut the amount of vouts up in chuncks of 250 for processing.
   elif (( VOUTS_NUMBER > 250 ))
@@ -114,7 +118,7 @@ do
         ((j++))
         VOUTS="$VOUTS\n$j"
       done
-      echo -e "$VOUTS" | xargs -I{} -P $(nproc) .check-vouts.sh "$JQ" "$VERUSID_FILE" "$VOUTS_CHUNK" {}
+      echo -e "$VOUTS" | xargs -I{} -P $(nproc) $SCRIPT_DIR/.check-vouts.sh "$VOUTS_CHUNK" {}
     done
   fi
   ((i++))
