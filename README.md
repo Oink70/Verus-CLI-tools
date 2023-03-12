@@ -199,7 +199,7 @@ in parallel.
  - Linux OS
  - Verus daemon, running with the `-blocknotify=/path/blocknotify.sh` option
  - `scripts` text file containing the script paths and names that need to be executed (See example `scripts` file below)
- 
+
 ### Usage
 `./blocknotify.sh <blocknumber>|<blockhash>`
 
@@ -245,7 +245,7 @@ The script can be used as standalone (see Usage), but is also called by `crawl-V
  - Linux OS
  - `jq` installed
  - The `verus` binary in the PATH environment. If not found it falls back to the location of the `verus` binary is set on line 16 of the script.
- - `.check-vouts.sh` in the same directory
+ - `.check-vouts.sh` in the same directory (NB. The default action is write IDs to a file, other sample code is included.)
 
 ### Usage
  - `./monitor-VerusID.sh 2234624`
@@ -266,7 +266,7 @@ The amount of processes used is the amount of CPU threads square.
  - `jq` installed
  - The `verus` binary in the PATH environment. If not found it falls back to the location of the `verus` binary is set on line 14 of the script.
  - `monitor-VerusID.sh` in the same directory
- - `.check-vouts.sh` in the same directory
+ - `.check-vouts.sh` in the same directory (NB. The default action is write IDs to a file, other sample code is included.)
 
 ### Usage
  - `./crawl-VerusID.sh` (command line options are ignored)
