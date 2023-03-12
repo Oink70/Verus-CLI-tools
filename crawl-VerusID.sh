@@ -4,26 +4,28 @@
 ## present in the block passed through the command line parameter.
 ## start en end blocks are specified on lines 14-15.
 ## If a mutation is detected, store the ID-name and i-address in a file
-## specified in line 10
+## specified in line 12.
 
-## Determine current path
-SCRIPT_PATH=$(dirname $(realpath $0))
-
-## location of the Verus ID file to store detected IDs
-VERUSID_FILE="/home/verus/bin/VerusIDs.txt"
+## location of the Verus ID file to store detected IDs.
+## The name will be appended by `-new.txt`, `-unlock.txt` or
+## `-update.txt`, depending on what is detected.
+VERUSID_FILE="/home/verus/bin/VerusIDs"
 ## location of the verus binary
 VERUS="/home/verus/bin/verus"
 ## start block enabling VerusIDs
 START_BLOCK=800200
-END_BLOCK=2434031
+END_BLOCK=2448931
 THREADS=$(nproc)
+
+## Set script folder
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 ## Check if the Verus binary is found and verusd is running.
 ## If Verus exists in the PATH environment, use it.
 ## If not, fall back to predefined location in this script.
 if command -v verus &>/dev/null
 then
-  VERUS=$(which verus)
+  export VERUS=$(which verus)
 elif command -v $VERUS &>/dev/null
 then
   break
@@ -44,5 +46,5 @@ fi
 
 echo "Crawling blockchain with parallel processes."
 BLOCKLIST=$(seq $START_BLOCK $END_BLOCK)
-echo "$BLOCKLIST" | xargs -I{} -P $THREADS $SCRIPT_PATH/monitor-VerusID.sh {} "$VERUSID_FILE" "$JQ" "$VERUS"
+echo "$BLOCKLIST" | xargs -I{} -P $THREADS $SCRIPT_DIR/monitor-VerusID.sh {} "$VERUSID_FILE" "$JQ" "$VERUS"
 echo "Done....                                                             "

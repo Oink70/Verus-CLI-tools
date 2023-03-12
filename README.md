@@ -234,7 +234,7 @@ including the blocktime, blockheight, TXID and address(es) that matched.
 ## monitor-VerusID.sh
 This script is meant to be run using the verusd `-blocknotify=/path/monitor-addresses.sh %s` option.
 The script takes blockhash or blockheight as input, checks that block for Identity update transactions.
-By default it writes the ID-name and i-address to a file specified at line 10 of the script, but the
+By default it writes the ID-name and i-address to a file specified at line 12 of the script, but the
 section that takes action has a remark indicating it is the "action" section, so anyone can adjust
 this script to their desires.
 The current version utilizes multiple threads, greatly improving speed, utilizing more system resources.
@@ -244,7 +244,7 @@ The script can be used as standalone (see Usage), but is also called by `crawl-V
 ### Prerequisites
  - Linux OS
  - `jq` installed
- - The `verus` binary in the PATH environment. If not found it falls back to the location of the `verus` binary is set on line 15 of the script.
+ - The `verus` binary in the PATH environment. If not found it falls back to the location of the `verus` binary is set on line 16 of the script.
  - `.check-vouts.sh` in the same directory
 
 ### Usage
@@ -253,8 +253,8 @@ The script can be used as standalone (see Usage), but is also called by `crawl-V
  - `verusd -blocknotify=/path/monitor-VerusID.sh %s`
 
 ## crawl-VerusID.sh
-The script uses a range of blocks from lines 14-15 and checks that range for Identity update transactions.
-By default it writes the ID-name and i-address to a file specified at line 10 of the script, but the
+The script uses a range of blocks from lines 16-17 and checks that range for Identity update transactions.
+By default it writes the ID-name and i-address to a file specified at line 12 of the script, but the
 section that takes action has a remark indicating it is the "action" section, so anyone can adjust
 this script to their desires.
 Since crawling large numbers of blocks is a time-consuming action, a block counter will be displayed in the terminal.
@@ -264,7 +264,7 @@ The amount of processes used is the amount of CPU threads square.
 ### Prerequisites
  - Linux OS
  - `jq` installed
- - The `verus` binary in the PATH environment. If not found it falls back to the location of the `verus` binary is set on line 15 of the script.
+ - The `verus` binary in the PATH environment. If not found it falls back to the location of the `verus` binary is set on line 14 of the script.
  - `monitor-VerusID.sh` in the same directory
  - `.check-vouts.sh` in the same directory
 
