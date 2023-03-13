@@ -13,10 +13,7 @@ VOUT="$2"
 # check the current vout for a identity transaction
 # if found pass the i-address and identity name into the $ID parameter
 ID=$(echo "$TRANSACTION_VOUTS" |\
- ${JQ} .[$VOUT].scriptPubKey |\
- $JQ -c -r '[select (.identityprimary != null ) |\
- .identityprimary.name,.identityprimary.identityaddress] |\
- select ( (. | length) > 1 )')
+ ${JQ} .[$VOUT].scriptPubKey | $JQ -c -r '[select (.identityprimary != null ) | .identityprimary.name,.identityprimary.identityaddress] | select ( (. | length) > 1 )')
 if [[ ${#ID} > 1 ]]
 then
   # determine if it is a new ID, an ID update or an ID delay-unlock
