@@ -113,7 +113,7 @@ for F in `ls -1A $DB`; do
             ((COUNTER++))
             if [[ "$COUNTER" == '250' ]]; then
                 INPUTS="${INPUTS%,}]"
-                OUTAMOUNT=$(bc<<<"$AMOUNT-$DEFAULT_FEE")
+                OUTAMOUNT=$(printf '%0.8f' $(bc<<<"$AMOUNT-$DEFAULT_FEE"))
                 OUTPUTS="{\"$ADDR\":$OUTAMOUNT}"
                 echo "TX $TXCOUNTER: Consolidating and moving $OUTAMOUNT on address $ADDR into a single UTXO"
                 echo "$((TXCOUNTER*250 + COUNTER)) of $UTXOS UTXOs are being processed."
@@ -132,7 +132,7 @@ for F in `ls -1A $DB`; do
             fi
         done < "$DB/$F"
         INPUTS="${INPUTS%,}]"
-        OUTAMOUNT=$(bc<<<"$AMOUNT-$DEFAULT_FEE")
+        OUTAMOUNT=$(printf '%0.8f' $(bc<<<"$AMOUNT-$DEFAULT_FEE"))
         OUTPUTS="{\"$ADDR\":$OUTAMOUNT}"
         echo "TX $TXCOUNTER: Consolidating and moving $OUTAMOUNT on address $ADDR into a single UTXO"
         echo "$((TXCOUNTER*250 + COUNTER)) of $UTXOS UTXOs are being processed."
