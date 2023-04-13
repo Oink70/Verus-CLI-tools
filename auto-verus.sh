@@ -10,6 +10,7 @@
 
 ## Determine current path
 SCRIPT_PATH=$(dirname $(realpath $0))
+cd $SCRIPT_PATH
 
 ## determine if the needed dependencies are available
 # --curl--
@@ -137,11 +138,11 @@ fi
 
 ## Download the latest release binary for this system
 echo "Downloading latest version..."
-${CURL} --silent --output "${GITHUB_DOWNLOAD_NAME}" -# -L -C - "${GITHUB_DOWNLOAD_URL}"
+${CURL} --silent --output "$SCRIPT_PATH/${GITHUB_DOWNLOAD_NAME}" -# -L -C - "${GITHUB_DOWNLOAD_URL}"
 
 ## Unpack the downloaded archive and get the signature data.
 echo "Extracting downloaded version..."
-FILELIST=$(tar -xvf "${GITHUB_DOWNLOAD_NAME}")
+FILELIST=$(tar -xvf "$SCRIPT_PATH/${GITHUB_DOWNLOAD_NAME}")
 for i in $FILELIST; do
   if [[ $i = *signature* ]]; then
     SIGNATURE_FILE=$i
@@ -151,7 +152,7 @@ for i in $FILELIST; do
 done
 
 printf "Verifying downloaded version"
-SIGNATURE_JSON=$(cat "${SIGNATURE_FILE}")
+SIGNATURE_JSON=$(cat "$SCRIPT_PATH/${SIGNATURE_FILE}")
 SIGNATURE=$(echo "${SIGNATURE_JSON}" | ${JQ} '.signature')
 SIGNER=$(echo "${SIGNATURE_JSON}" | ${JQ} '.signer')
 SHA256=$(echo "${SIGNATURE_JSON}" | ${JQ} -r '.hash')
@@ -159,7 +160,7 @@ SHA256=$(echo "${SIGNATURE_JSON}" | ${JQ} -r '.hash')
 ## Verify the signature or sha256, depending on if chain is running and not forked or not running.
 if [[ ( "${DAEMON_ACTIVE}" == "0" ) || ( "${CHECK_FORK}" == "CRIT" ) ]]; then
   printf ", using SHA256 checksum method...\n"
-  if [[ $(shasum -a256 ${SIGNED_BINARY}) == ${SHA256}* ]]; then
+  if [[ $(shasum -a256 $SCRIPT_PATH/${SIGNED_BINARY}) == ${SHA256}* ]]; then
     CHECK_RESULT=true
   else
     CHECK_RESULT=false
@@ -171,15 +172,15 @@ fi
 
 if [[ "${CHECK_RESULT}" == "true" ]]; then
         echo "Download verified: OK"
-	if [[ -d verus-cli ]]; then
-		rm -rf verus-cli
+	if [[ -d $SCRIPT_PATH/verus-cli ]]; then
+		rm -rf $SCRIPT_PATH/verus-cli
 	fi
-	tar -xf "${SIGNED_BINARY}"
-	rm -f ${GITHUB_DOWNLOAD_NAME} ${FILELIST}
+	tar -xf "$SCRIPT_PATH/${SIGNED_BINARY}"
+	rm -f $SCRIPT_PATH/${GITHUB_DOWNLOAD_NAME} $SCRIPT_PATH/${FILELIST}
 else
 	echo "The integrity check of ${SIGNED_BINARY} failed."
 	echo "Removing downloaded files..."
-	rm -f ${GITHUB_DOWNLOAD_NAME} ${FILELIST}
+	rm -f $SCRIPT_PATH/${GITHUB_DOWNLOAD_NAME} $SCRIPT_PATH/${FILELIST}
 	echo "The upgrade procedure is stopped for security reasons."
 	echo "Exiting now..."
 	sleep 3s
