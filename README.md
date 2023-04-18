@@ -16,6 +16,7 @@ Some of these scripts are based on code written by Alex English (https://github.
  - `monitor-addresses.sh`: Meant to be run from `-blocknotify=`. Monitors transactions **from** addresses.
  - `monitor-VerusID.sh`: Meant to be run from `-blocknotify=`. Monitors VerusID updates/creations.
  - `crawl-VerusID.sh`: crawl a predefined range of blocks on the chain for VerusID updates/creations.
+ - `update-id.sh`: updates the specified ID to a newly created Primary address in the current wallet.
  - `block-stats`: retrieves some key statistics from the chain over a specified time frame.
 ## content only usable on testnet:
  - `launch-pbaas-chains.sh`: launches all PBaaS chains known on the VRSCTEST network.
@@ -270,6 +271,18 @@ The amount of processes used is the amount of CPU threads square.
 
 ### Usage
  - `./crawl-VerusID.sh` (command line options are ignored)
+
+## update-id.sh
+This script craetes a new R-address and assigns the identity specified in the command line parameters over to that new address.
+
+### Prerequisites
+ - Linux OS
+ - `jq` installed
+ - The `verus` binary in the PATH environment. If not found it falls back to the location of the `verus` binary is set on line 7 of the script.
+
+### Usage
+ - `./update-id.sh -i "Identity@"`
+ - `./update-id.sh --identity i-address`
 
 ## block-stats.sh
 Shows statistics about difficulty (max/avg/min), hashrate (max/avg/min), amount of blocks (total/PoW/PoS), Rewards (Total/PoW/PoS), Fees (Total/PoW/PoS).
