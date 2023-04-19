@@ -297,7 +297,6 @@ Shows statistics about difficulty (max/avg/min), hashrate (max/avg/min), amount 
 ### Usage
 `./block-stats.sh [options]`
 ##### Options:
- - `-a # || --address #`         : (MANDATORY) specify an address to use.
  - `-t # || --time-window #`     : Set an arbitrary time window (default 24hours). This amount will be deducted from the end date to determine the start date.
                                    Requires #minute/#hour/#day/#week/#month/#year.
  - `-s # || --start #`           : Set a start date (00:00 UTC). Overrides the time window. Requires time in YYYY-MM-DD or "YYYY-MM-DD hh:mm:ss" format.
