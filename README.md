@@ -19,8 +19,8 @@ Some of these scripts are based on code written by Alex English (https://github.
  - `update-id.sh`: updates the specified ID to a newly created Primary address in the current wallet.
  - `block-stats`: retrieves some key statistics from the chain over a specified time frame.
  - `launch-pbaas-chains.sh`: launches all PBaaS chains known on the VRSCTEST network.
-## content only usable on testnet:
  - `verus-ufw.sh`: Opens UFW ports for all testnet chains that are running.
+## content only usable on testnet:
  - `check-notarizations.sh`: Checks the notarization heights of PBaaS chains.
 
 ## auto-verus.sh
@@ -320,8 +320,6 @@ Scans the running `vrsctest` chain for PBaaS chains and starts them if they are 
 ### notice
 Very basic script, no sanity checks.
 
-
-# Scripts currently only usable on testnet
 ## verus-ufw.sh
 ### Description
 Checks the `ufw` for previously created rules by this script and removes them, then scans the main chain (`vrsctest`) for defined PBaaS chains, tries to get each chains info and if
@@ -341,6 +339,7 @@ successful, use that info to open the P2P port for that chain.
 ### notice
 Very basic script, no sanity checks.
 
+# Scripts currently only usable on testnet
 ## check-notarizations.sh
 ### Description
 Checks wich PBaaS chains are created and checks the notarization status of the running PBaas chains.
