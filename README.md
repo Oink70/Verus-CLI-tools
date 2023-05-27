@@ -18,8 +18,8 @@ Some of these scripts are based on code written by Alex English (https://github.
  - `crawl-VerusID.sh`: crawl a predefined range of blocks on the chain for VerusID updates/creations.
  - `update-id.sh`: updates the specified ID to a newly created Primary address in the current wallet.
  - `block-stats`: retrieves some key statistics from the chain over a specified time frame.
-## content only usable on testnet:
  - `launch-pbaas-chains.sh`: launches all PBaaS chains known on the VRSCTEST network.
+## content only usable on testnet:
  - `verus-ufw.sh`: Opens UFW ports for all testnet chains that are running.
  - `check-notarizations.sh`: Checks the notarization heights of PBaaS chains.
 
@@ -303,9 +303,6 @@ Shows statistics about difficulty (max/avg/min), hashrate (max/avg/min), amount 
  - `-e # || --end #`             : Set an end date (00:00 UTC). if not set, it uses the current time. Requires time in YYYY-MM-DD or "YYYY-MM-DD hh:mm:ss" format.
  - `-h   || --help`              : Displays help text on the console.
 
-
-# Scripts currently only usable on testnet
-
 ## launch-pbaas-chains.sh
 ### Description
 Scans the running `vrsctest` chain for PBaaS chains and starts them if they are not running yet
@@ -323,6 +320,8 @@ Scans the running `vrsctest` chain for PBaaS chains and starts them if they are 
 ### notice
 Very basic script, no sanity checks.
 
+
+# Scripts currently only usable on testnet
 ## verus-ufw.sh
 ### Description
 Checks the `ufw` for previously created rules by this script and removes them, then scans the main chain (`vrsctest`) for defined PBaaS chains, tries to get each chains info and if
