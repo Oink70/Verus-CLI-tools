@@ -13,11 +13,12 @@ VOUT="$2"
 # check the current vout for a identity transaction
 # if found pass the i-address and identity name into the $ID parameter
 ID=$(echo "$TRANSACTION_VOUTS" |\
- ${JQ} .[$VOUT].scriptPubKey | $JQ -c -r '[select (.identityprimary != null ) | .identityprimary.name,.identityprimary.identityaddress] | select ( (. | length) > 1 )')
+ ${JQ} .[$VOUT].scriptPubKey | $JQ -c -r '[select (.identityprimary != null ) | .identityprimary.name,.identityprimary.identityaddress,.identityprimary.parent] | select ( (. | length) > 1 )')
 if [[ ${#ID} > 1 ]]
 then
   # determine if it is a new ID, an ID update or an ID delay-unlock
-  VERUS_ID=$(echo "$ID" | $JQ -r '.[0]')
+  CURRENCY=$($VERUS getcurrency $(echo "$ID" | $JQ -r '.[2]') | $JQ -r '.name')
+  VERUS_ID=$(echo "$(echo $ID | $JQ -r '.[0]').$CURRENCY")
   ID_ADDRESS=$(echo "$ID" | $JQ -r '.[1]')
   ID_HISTORY=$($VERUS getidentityhistory $(echo "$ID_ADDRESS") | jq '.history')
   ID_HISTORY_LENGTH=$(echo $ID_HISTORY | $JQ '. | length')
