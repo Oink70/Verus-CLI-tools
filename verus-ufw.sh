@@ -1,6 +1,7 @@
 #!/bin/bash
 USER=verus
 VERUS=/home/verus/bin/verus
+MAIN_CHAIN=VRSC
 JQ=$(which jq)
 
 ## Remove all PBAAS chains from UFW
@@ -10,7 +11,7 @@ for i in $REG; do
 done
 
 ## Retrieve chain names for all vrsctest + PBAAS chains
-CHAIN_DEFINITIONS=$(su "${USER}" -c "${VERUS} -chain=vrsctest listcurrencies '{\"systemtype\":\"pbaas\"}'")
+CHAIN_DEFINITIONS=$(su "${USER}" -c "${VERUS} -chain=$MAIN_CHAIN listcurrencies '{\"systemtype\":\"pbaas\"}'")
 CHAINS=$(echo $CHAIN_DEFINITIONS | $JQ -r '.[] | .currencydefinition.name')
 
 ## add standard ports for all chains to UFW
