@@ -2,9 +2,10 @@
 USER=verus
 VERUS=/home/verus/bin/verus
 VERUSD=/home/verus/bin/verusd
+MAIN_CHAIN=VRSC
 JQ=$(which jq)
 
-CHAIN_DEFINITIONS=$(su "${USER}" -c "${VERUS} -chain=vrsctest listcurrencies '{\"systemtype\":\"pbaas\"}'")
+CHAIN_DEFINITIONS=$(su "${USER}" -c "${VERUS} -chain=${MAIN_CHAIN} listcurrencies '{\"systemtype\":\"pbaas\"}'")
 CHAINS=$(echo $CHAIN_DEFINITIONS | $JQ -r '.[] | .currencydefinition.name')
 
 for i in $CHAINS
