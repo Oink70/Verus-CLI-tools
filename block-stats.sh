@@ -112,6 +112,9 @@ fi
 ## set filename for the CSV export (based on start and end)
 EXPORT_CSV="${TIME_START}-${TIME_END}_stats.csv"
 
+## Create a temporary file
+temp_file=$(mktemp)
+
 ## Determine the blocknumbers that need to be scanned.
 ## D etermine the first block that happens after $TIME_START
 ## To do this, we take an hour time window, retrieve the list of blockhashes
@@ -136,12 +139,12 @@ while [ $c -le $e ]; do
   ($VERUS getblock "$c" 2 | $JQ '{ height: .height, blocktype: .blocktype, difficulty: .difficulty, blockreward: [.tx[0].vout[].value] | add }';\
   ($VERUS getblocksubsidy "$c" | $JQ -c '{blocksubsidy: .miner}');\
   printf '{"networksolps": %s}\n ' $($VERUS getnetworksolps -1 $c)) |\
-  jq -s '[reduce .[] as $item ({}; . * $item)]' >> tmp
+  jq -s '[reduce .[] as $item ({}; . * $item)]' >> $temp_file
   c+=1
 done
 printf "                            \r"
-JSON=$($JQ -s 'add' tmp)
-rm tmp
+JSON=$($JQ -s 'add' $temp_file)
+rm $temp_file
 
 ## Calculate BASIC statistics from JSON
 MAX_DIFF=$(echo $JSON | $JQ -c '[.[].difficulty] | max')
