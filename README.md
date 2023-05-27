@@ -20,7 +20,6 @@ Some of these scripts are based on code written by Alex English (https://github.
  - `block-stats`: retrieves some key statistics from the chain over a specified time frame.
  - `launch-pbaas-chains.sh`: launches all PBaaS chains known on the VRSCTEST network.
  - `verus-ufw.sh`: Opens UFW ports for all testnet chains that are running.
-## content only usable on testnet:
  - `check-notarizations.sh`: Checks the notarization heights of PBaaS chains.
 
 ## auto-verus.sh
@@ -339,7 +338,6 @@ successful, use that info to open the P2P port for that chain.
 ### notice
 Very basic script, no sanity checks.
 
-# Scripts currently only usable on testnet
 ## check-notarizations.sh
 ### Description
 Checks wich PBaaS chains are created and checks the notarization status of the running PBaas chains.

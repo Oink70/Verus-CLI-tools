@@ -2,12 +2,12 @@
 
 VERUS=~/bin/verus
 VERUSD=~/bin/verusd
+PARENT_NAME=VRSC
 JQ=$(which jq)
 
-CHAIN_DEFINITIONS=$(${VERUS} -chain=vrsctest listcurrencies '{"systemtype":"pbaas"}')
+CHAIN_DEFINITIONS=$(${VERUS} -chain=${PARENT_NAME} listcurrencies '{"systemtype":"pbaas"}')
 CHILD_NAME=$(echo $CHAIN_DEFINITIONS | $JQ -r '.[] | .currencydefinition.name' | sed 's/VRSCTEST//')
 
-PARENT_NAME=vrsctest
 printf "\nNotarizations\n=============\n\n"
 for i in $CHILD_NAME
 do
