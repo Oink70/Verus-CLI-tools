@@ -344,15 +344,13 @@ Checks wich PBaaS chains are created and checks the notarization status of the r
 
 ###Prerequisites
    - Linux OS
-   - `jq` installed
-   - at least `vrsctest` chain running
+   - `jq` & `sed`  installed
+   - at least `vrsc` chain running
    - locations configured in the script file
 
 ### Usage
 `./check-notarizations.sh`
-
-### notice
-Fairly basic script, no sanity checks.
+optional switch `-t` or `--testnet` for usage on testnet.
 
 
 # DISCLAIMER
