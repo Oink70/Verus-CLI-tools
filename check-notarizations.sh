@@ -70,6 +70,7 @@ fi
 CHAIN_DEFINITIONS=$(${VERUS} -chain=$PARENT_NAME listcurrencies '{"systemtype":"pbaas"}')
 CHILD_NAME=$(echo $CHAIN_DEFINITIONS | $JQ -r '.[] | .currencydefinition.name' | $SED "s/$PARENT_NAME//I")
 
+
 printf "\nNotarizations\n=============\n\n"
 for i in $CHILD_NAME
 do
