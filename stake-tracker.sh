@@ -1,5 +1,5 @@
 #!/bin/bash
-## © Oink 2022
+## © Oink 2022 - 2024
 ## Over the past 24 hours, this script counts the amount of:
 ## - orphaned stakes ($ORPHANS)
 ## - accepted stakes with 100 or more confirmations ($STAKES)
@@ -50,7 +50,7 @@ done
 BLOCKS=$(echo "$($VERUS getblockcount)-$ITERATE_BLOCK" | $BC)
 
 # Determine the amount of orphans in the time interval
-ORPHANS=$($VERUS listtransactions "" 999 | $JQ "[.[] | select(.confirmations==-1) | select(.amount==0) | select(.time>=$TIME)]" | $JQ -s ".[] | length")
+ORPHANS=$($VERUS listtransactions "" 999 | $JQ "[.[] | select(.confirmations==-1) | select(.amount==0) | select(.time>=$TIME) | select (.category==\"stake\")]" | $JQ -s ".[] | length")
 # Add 100 to BLOCKS to account for maturation time
 BLOCKS=$(echo "$BLOCKS + 100" | $BC)
 # Determine the amount of stakes in the time interval
