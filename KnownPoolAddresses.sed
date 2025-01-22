@@ -6,3 +6,4 @@ s/RM4HhiLViQpkoP6VKKQX6zy3XfhdFv9kfZ/\x1B[32m& <-- HappyPool\x1B[0m/g
 s/RKNfKXfyffwngQZqJLYUsWJ8JMNb7FR7f1/\x1B[32m& <-- Wattpool\x1B[0m/g
 s/RBMmSC4w1FUjLtEPNS7J2NfKj23xwNdZo3/\x1B[32m& <-- AiH\x1B[0m/g
 s/RVoXgbtrd56wDxFMnHPUTsPKoGrCTT1aci/\x1B[32m& <-- PaddyPool\x1B[0m/g
+s/RPcpnatRizEkUNAVjUd8DaWViaJ1XLUcvH/\x1B[32m& <-- rg3d.eu\x1B[0m/g
