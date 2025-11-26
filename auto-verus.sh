@@ -157,7 +157,7 @@ SIGNATURE=$(echo "${SIGNATURE_JSON}" | ${JQ} '.signature')
 SIGNER=$(echo "${SIGNATURE_JSON}" | ${JQ} '.signer')
 SHA256=$(echo "${SIGNATURE_JSON}" | ${JQ} -r '.hash')
 
-## Verify the signature or sha256, depending on if chain is running and not forked or not running.
+## Verify the signature or sha256, depending on if chain is running and not forked or not running or at pre-ID height.
 if [[ ( "${DAEMON_ACTIVE}" == "0" ) || ( "${CHECK_FORK}" == "CRIT" ) || ( "$HEIGHT_LOCAL" < "949482" ) ]]; then
   printf ", using SHA256 checksum method...\n"
   if [[ $(shasum -a256 $SCRIPT_PATH/${SIGNED_BINARY}) == ${SHA256}* ]]; then
