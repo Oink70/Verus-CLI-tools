@@ -5,8 +5,9 @@
 ## Required binaries:
 ## jq, curl
 
-## This script will install or upgrade the latest released Verus-CLI binaries from
-## the official VerusCoin Github repository (https://github.com/VerusCoin/VerusCoin)
+## This script will upgrade to the latest released Verus-CLI binaries from the
+## official VerusCoin Github repository (https://github.com/VerusCoin/VerusCoin),
+## but without restarting any daemon. Restarts needs to be done manually.
 
 ## Determine current path
 SCRIPT_PATH=$(dirname $(realpath $0))
