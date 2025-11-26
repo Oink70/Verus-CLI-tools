@@ -51,6 +51,17 @@ Some of these scripts are based on code written by Alex English (https://github.
 ### Usage
  - Execute `auto-verus.sh`. Command line parameters are ignored.
 
+## stage-daemon-upgrade.sh
+### Description
+Similar to `auto-verus.sh`, but without restarting any running VRSC daemon.
+
+### Prerequisites
+ - Linux OS
+ - `curl` and `jq` installed
+
+### Usage
+ - Execute `auto-verus.sh`. Command line parameters are ignored.
+
 ## start-verus.sh
 ### Description
 1) Start the Verus daemon, and the script waits to return to the command line, until the following conditions are met:

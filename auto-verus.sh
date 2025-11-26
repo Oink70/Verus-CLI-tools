@@ -1,6 +1,6 @@
 #!/bin/bash
 
-## © Oink 2021, released under MIT license
+## © Oink 2021-2025, released under MIT license
 ##
 ## Required binaries:
 ## jq, curl
@@ -113,7 +113,7 @@ if [[ "${DAEMON_ACTIVE}" == "1" ]]; then
 		# collect data
 		HASH_LOCAL=$(${VERUS} getbestblockhash)
 		HEIGHT_LOCAL=$(${VERUS} getblock ${HASH_LOCAL} 1 | jq -r .height)
-		HASH_REMOTE=$(${CURL} --silent "https://explorer.verus.io/api/getblockhash?index=${HEIGHT_LOCAL}" | ${JQ} -r .)
+		HASH_REMOTE=$(${CURL} --silent --data-binary "{\"jsonrpc\" : \"1.0\", \"id\" : \"hashget\", \"method\" : \"getblock\", \"params\" : [$HEIGHT_LOCAL]}" -H 'content-type:text/plain;' https://api.verus.services | ${JQ} -r '.result.hash')
 		# determine status
 		# either output empty = unknown
 		if [ -z "${HASH_LOCAL}" ] || [ -z "${HASH_REMOTE}" ]; then
@@ -157,8 +157,8 @@ SIGNATURE=$(echo "${SIGNATURE_JSON}" | ${JQ} '.signature')
 SIGNER=$(echo "${SIGNATURE_JSON}" | ${JQ} '.signer')
 SHA256=$(echo "${SIGNATURE_JSON}" | ${JQ} -r '.hash')
 
-## Verify the signature or sha256, depending on if chain is running and not forked or not running.
-if [[ ( "${DAEMON_ACTIVE}" == "0" ) || ( "${CHECK_FORK}" == "CRIT" ) ]]; then
+## Verify the signature or sha256, depending on if chain is running and not forked or not running or at pre-ID height.
+if [[ ( "${DAEMON_ACTIVE}" == "0" ) || ( "${CHECK_FORK}" == "CRIT" ) || ( "$HEIGHT_LOCAL" < "949482" ) ]]; then
   printf ", using SHA256 checksum method...\n"
   if [[ $(shasum -a256 $SCRIPT_PATH/${SIGNED_BINARY}) == ${SHA256}* ]]; then
     CHECK_RESULT=true
@@ -222,10 +222,11 @@ fi
 if [[ "${DAEMON_ACTIVE}" == "1" ]]; then
         ${VERUS} stop
   ## Monitoring if the daemon is still running, before continuing
-  while ps -u "${USER}" x | grep "${VERUSD} " | grep -v "grep"; do
+  while ps -u "${USER}" x | grep "${VERUSD} " | grep -v "-chain=" | grep -v "grep"; do
     sleep 2s
   done
 fi
+## insert 5 seconds wait to ensure daemon is indeed down
 
 ## in case of a new install, download zcashparams & bootstrap files
 START_PARAMETERS=""
@@ -243,7 +244,8 @@ fi
 ## start daemon normally, except for forked chain.
 ## Forked chain will start with `-zapwallettxes=2 -rescan`
 if [[ "${DAEMON_ACTIVE}" == "1" ]]; then
-    cd ~/.komodo/VRSC
+        sleep 5s
+        cd ~/.komodo/VRSC
 	${VERUSD} ${START_PARAMETERS} -daemon 1>/dev/null 2>&1 &
 else
 	cp ${SCRIPT_PATH}/verus-cli/verusd .
@@ -261,7 +263,7 @@ else
 	echo "Verus is upgraded to ${GITHUB_LATEST_RELEASE}."
 	if [[ "${CHECK_FORK}" == "CRIT" ]]; then
 		echo "Your chain was forked."
-		echo "Bootstrap archive has been downloaded and extracted."
+		echo "Bootstrap will be executed."
 		echo "your wallet will be rescanned."
 	fi
 	echo "Verus daemon is starting up now."
@@ -276,6 +278,7 @@ sleep 2s
     fi
 done
 
-echo "Your Verus daemon has started and is connecting to peers..."
+echo "Your Verus daemon has started and is connecting to peers."
+echo "Please restart any PBaaS daemons manually."
 
 #EOF
