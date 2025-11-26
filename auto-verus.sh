@@ -1,6 +1,6 @@
 #!/bin/bash
 
-## © Oink 2021, released under MIT license
+## © Oink 2021-2025, released under MIT license
 ##
 ## Required binaries:
 ## jq, curl
