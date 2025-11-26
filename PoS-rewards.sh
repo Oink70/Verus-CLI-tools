@@ -149,6 +149,6 @@ while [ $c -le $e ]; do
 done | \
 sort | \
 uniq -c | \
-sort -bgr | \
+sort -k1.1rbn,1 -k2,2 | \
 sed '/RCG8KwJNDVwpUBcdoa6AoHqHVJsA1uMYMR/d' | \
 sed -f $FILTER_FILE

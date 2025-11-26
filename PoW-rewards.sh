@@ -148,5 +148,5 @@ while [ $c -le $e ]; do
 done | \
 sort | \
 uniq -c | \
-sort -bgr | \
+sort -k1.1rbn,1 -k2,2 | \
 sed -f $FILTER_FILE

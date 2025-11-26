@@ -4,23 +4,23 @@
 ## during the specified period.
 
 # Set locations of the Verus binary. This location will be used if verus was not found in the PATH environment.
-VERUS=/opt/verus-cli/verus2
+VERUS=/home/verus/bin/verus
 
 ## check if the Verus binary is found and verusd is running.
 ## If Verus exists in the PATH environment, use it.
 ## If not, fall back to predefined location in this script.
-#if ! command -v verus &>/dev/null
-#then
-#  echo "verus not found in your PATH environment. Using location from line 9 in this script."
+if ! command -v verus &>/dev/null
+then
+  echo "verus not found in your PATH environment. Using location from line 9 in this script."
   if ! command -v $VERUS &>/dev/null
   then
     echo "Verus could not be found. Make sure it's in your path and/or in line 9 of this script."
     echo "exiting..."
     exit 1
   fi
-#else
-#  VERUS=$(which verus)
-#fi
+else
+  VERUS=$(which verus)
+fi
 
 count=$(${VERUS} getconnectioncount 2>/dev/null)
 case $count in
