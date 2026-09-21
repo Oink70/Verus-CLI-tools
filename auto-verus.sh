@@ -157,17 +157,20 @@ SIGNATURE=$(echo "${SIGNATURE_JSON}" | ${JQ} '.signature')
 SIGNER=$(echo "${SIGNATURE_JSON}" | ${JQ} '.signer')
 SHA256=$(echo "${SIGNATURE_JSON}" | ${JQ} -r '.hash')
 
-## Verify the signature or sha256, depending on if chain is running and not forked or not running or at pre-ID height.
-if [[ ( "${DAEMON_ACTIVE}" == "0" ) || ( "${CHECK_FORK}" == "CRIT" ) || ( "$HEIGHT_LOCAL" < "949482" ) ]]; then
-  printf ", using SHA256 checksum method...\n"
-  if [[ $(shasum -a256 $SCRIPT_PATH/${SIGNED_BINARY}) == ${SHA256}* ]]; then
+## Verify sha256 and depending on if chain is running and not forked or not running or at pre-ID height, also ID-verify the SHA256
+printf ", using SHA256 checksum method...\n"
+SHA256SUM=$(shasum -a256 $SCRIPT_PATH/${SIGNED_BINARY})
+if [[ ${SHA256SUM} == ${SHA256}* ]]
+  then
+  if [[ -z "$HEIGHT_LOCAL" ]] || [[ "${DAEMON_ACTIVE}" == "0" ]] || [[ "${CHECK_FORK}" == "CRIT" ]] || [[ "$HEIGHT_LOCAL" -lt 949482 ]]
+  then
     CHECK_RESULT=true
   else
-    CHECK_RESULT=false
+    echo "And using the VerusID signature..."
+    CHECK_RESULT=$(bash -c "${VERUS} verifyhash ${SIGNER} ${SIGNATURE} ${SHA256SUM}")
   fi
 else
-  echo ", using the VerusID signature..."
-  CHECK_RESULT=$(bash -c "${VERUS} verifyfile ${SIGNER} ${SIGNATURE} ${SCRIPT_PATH}/${SIGNED_BINARY}")
+  CHECK_RESULT=false
 fi
 
 if [[ "${CHECK_RESULT}" == "true" ]]; then
