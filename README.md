@@ -1,6 +1,6 @@
 # Verus-CLI-tools
 A collection of scripts to simplify life on CLI.
-These tools are tested on Linux Ubuntu 20.04LTS, Debian 10 and Debian 11
+These tools are tested on Linux Ubuntu 20.04LTS, Debian 10, 11 and 12.
 Some of these scripts are based on code written by Alex English (https://github.com/alexenglish/VerusExtras)
 
 ## Content suitable for mainnet:
